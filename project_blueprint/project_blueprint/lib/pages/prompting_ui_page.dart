@@ -73,7 +73,7 @@ class _PromptingUIPageState extends State<PromptingUIPage> {
             TextButton(
               onPressed: () {},
               child: const Text(
-                "Switch to colour pallet",
+                "Color-Palette Mode",
                 style:
                     TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               ),

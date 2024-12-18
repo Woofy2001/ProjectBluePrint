@@ -8,13 +8,15 @@ class CommunityGalleryPage extends StatelessWidget {
       "image": "assets/design1.jpg",
       "user": "Sophia Carter",
       "date": "2024-12-15",
-      "prompt": "2 bedrooms, eco-friendly layout"
+      "prompt":
+          "Design a cozy 2-bedroom modern home with an open-plan living area, a stylish kitchen with an island, and a compact dining space. Include warm wooden floors, large windows for natural light, and a small patio for outdoor relaxation."
     },
     {
       "image": "assets/design2.jpg",
       "user": "John Doe",
       "date": "2024-12-10",
-      "prompt": "3 bedrooms, coastal design"
+      "prompt":
+          "Create a luxurious 4-bedroom house with open-concept living, elegant interiors, spacious balconies, and a rooftop terrace. Feature sleek white and gray tones, large windows, and modern design elements for a bright, upscale feel."
     },
   ];
 
