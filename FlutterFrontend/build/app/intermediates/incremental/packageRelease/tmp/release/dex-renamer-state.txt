@@ -1,0 +1,4 @@
+#Mon Feb 10 15:47:51 IST 2025
+base.0=/Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

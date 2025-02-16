@@ -1,0 +1,272 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:2:5-33:19
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:2:5-33:19
+MERGED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/90f8f1e3f6533fdfd49d26e228a8d514/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/90f8f1e3f6533fdfd49d26e228a8d514/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+	android:label
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:3:9-42
+	android:icon
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:5:9-43
+	android:name
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:4:9-42
+manifest
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:1:1-45:12
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:1:1-45:12
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:1:1-45:12
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:1:1-45:12
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/rishara/.gradle/caches/8.10.2/transforms/a1f94736af9e994e9923f30ad34459aa/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.window:window-java:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/9af04abf95e2f80e6e29f0b0f6af651f/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
+MERGED from [androidx.activity:activity:1.8.1] /Users/rishara/.gradle/caches/8.10.2/transforms/75bc8a31e2212e6d07731f33955d1fd4/transformed/jetified-activity-1.8.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/1be4856e8de2f9e1d9b9029098628a6d/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ce0ba7f2f0cc542c72e7ec6f96a4aa8b/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b1010f131bcdf3d8dcd43e5b1aedf2a0/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/5a75dd6017c7364e5176f14b02d5ccbf/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b5c21303df0b27571118f65e1e879a25/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/45544f96ecdc705f08feaf5f594b00d7/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/8e30804dbdaa95792450445bcee21375/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/117d6b2e84ccfe161a3371925c23a672/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/cd7bfb87b7c51bf6b115275ab2a8d826/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ec6e128bb7f963b502464ad4d1a8668a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/rishara/.gradle/caches/8.10.2/transforms/eeaae9adac1ed9108aede4d28db40191/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/rishara/.gradle/caches/8.10.2/transforms/a9905cf1e599515f5e924edfe6eb43ba/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/32922e861c4401c27549fe71edc4620b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/773820d4829f31d78f0ba3787fc15530/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/90f8f1e3f6533fdfd49d26e228a8d514/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/58e84e832f72d7b8780db17a1e13ddbc/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/87c135429c893839385979a8c423c117/transformed/jetified-core-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/rishara/.gradle/caches/8.10.2/transforms/421c636f42fbc1f27737390d96bc5e9c/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:1:11-69
+queries
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:39:5-44:15
+intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:40:9-43:18
+action#android.intent.action.PROCESS_TEXT
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:41:13-72
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:41:21-70
+data
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:42:13-50
+	android:mimeType
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:42:19-48
+activity#com.example.project_blueprint.MainActivity
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:6:9-27:20
+	android:launchMode
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:9:13-43
+	android:hardwareAccelerated
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:13:13-47
+	android:windowSoftInputMode
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:14:13-55
+	android:exported
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:8:13-36
+	android:configChanges
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:12:13-163
+	android:theme
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:11:13-47
+	android:taskAffinity
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:10:13-36
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:7:13-41
+meta-data#io.flutter.embedding.android.NormalTheme
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:19:13-22:17
+	android:resource
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:21:15-52
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:20:15-70
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:23:13-26:29
+action#android.intent.action.MAIN
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:24:17-68
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:24:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:25:17-76
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:25:27-74
+meta-data#flutterEmbedding
+ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:30:9-32:33
+	android:value
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:32:13-30
+	android:name
+		ADDED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml:31:13-44
+uses-sdk
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/rishara/.gradle/caches/8.10.2/transforms/a1f94736af9e994e9923f30ad34459aa/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/rishara/.gradle/caches/8.10.2/transforms/a1f94736af9e994e9923f30ad34459aa/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/9af04abf95e2f80e6e29f0b0f6af651f/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/9af04abf95e2f80e6e29f0b0f6af651f/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/rishara/.gradle/caches/8.10.2/transforms/75bc8a31e2212e6d07731f33955d1fd4/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/rishara/.gradle/caches/8.10.2/transforms/75bc8a31e2212e6d07731f33955d1fd4/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/1be4856e8de2f9e1d9b9029098628a6d/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/1be4856e8de2f9e1d9b9029098628a6d/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ce0ba7f2f0cc542c72e7ec6f96a4aa8b/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ce0ba7f2f0cc542c72e7ec6f96a4aa8b/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b1010f131bcdf3d8dcd43e5b1aedf2a0/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b1010f131bcdf3d8dcd43e5b1aedf2a0/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/5a75dd6017c7364e5176f14b02d5ccbf/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/5a75dd6017c7364e5176f14b02d5ccbf/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b5c21303df0b27571118f65e1e879a25/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/b5c21303df0b27571118f65e1e879a25/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/45544f96ecdc705f08feaf5f594b00d7/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/45544f96ecdc705f08feaf5f594b00d7/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/8e30804dbdaa95792450445bcee21375/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/8e30804dbdaa95792450445bcee21375/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/117d6b2e84ccfe161a3371925c23a672/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/117d6b2e84ccfe161a3371925c23a672/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/cd7bfb87b7c51bf6b115275ab2a8d826/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/cd7bfb87b7c51bf6b115275ab2a8d826/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ec6e128bb7f963b502464ad4d1a8668a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ec6e128bb7f963b502464ad4d1a8668a/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/rishara/.gradle/caches/8.10.2/transforms/eeaae9adac1ed9108aede4d28db40191/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/rishara/.gradle/caches/8.10.2/transforms/eeaae9adac1ed9108aede4d28db40191/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/rishara/.gradle/caches/8.10.2/transforms/a9905cf1e599515f5e924edfe6eb43ba/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/rishara/.gradle/caches/8.10.2/transforms/a9905cf1e599515f5e924edfe6eb43ba/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/32922e861c4401c27549fe71edc4620b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/32922e861c4401c27549fe71edc4620b/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/773820d4829f31d78f0ba3787fc15530/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/773820d4829f31d78f0ba3787fc15530/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/90f8f1e3f6533fdfd49d26e228a8d514/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/90f8f1e3f6533fdfd49d26e228a8d514/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/58e84e832f72d7b8780db17a1e13ddbc/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/58e84e832f72d7b8780db17a1e13ddbc/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/87c135429c893839385979a8c423c117/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/rishara/.gradle/caches/8.10.2/transforms/87c135429c893839385979a8c423c117/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/rishara/.gradle/caches/8.10.2/transforms/421c636f42fbc1f27737390d96bc5e9c/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+MERGED from [com.getkeepsafe.relinker:relinker:1.4.5] /Users/rishara/.gradle/caches/8.10.2/transforms/421c636f42fbc1f27737390d96bc5e9c/transformed/jetified-relinker-1.4.5/AndroidManifest.xml:5:5-43
+	android:targetSdkVersion
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/rishara/Documents/ProjectBluePrint/project_blueprint/project_blueprint/android/app/src/main/AndroidManifest.xml
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/rishara/.gradle/caches/8.10.2/transforms/dd32a595315823fe82c7f37be04484f6/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+permission#com.example.project_blueprint.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+uses-permission#com.example.project_blueprint.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/rishara/.gradle/caches/8.10.2/transforms/e24b2666edcdb1945acc054af1d3ec54/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/rishara/.gradle/caches/8.10.2/transforms/4ce0a1ce66ccac3d23e1c1e470b19316/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/rishara/.gradle/caches/8.10.2/transforms/ac0e1ff5389a6d10f1f91edfcfe54e78/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/rishara/.gradle/caches/8.10.2/transforms/3c5a7c7c9e5c27ec60d6eced40079e9b/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
