@@ -1,0 +1,92 @@
+import 'package:flutter/material.dart';
+import 'contact.dart';
+import 'contact_list.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Contact> contacts = [
+    Contact(name: "Mavan Athapaththu", profileImage: "assets/mavan.jpg"),
+    Contact(name: "John Doe", profileImage: "assets/john.jpg"),
+    Contact(name: "Jane Smith", profileImage: "assets/jane.jpg"),
+    Contact(name: "Alice Brown", profileImage: "assets/jane.jpg"),
+    Contact(name: "Bob White", profileImage: "assets/john.jpg"),
+  ];
+
+  List<Contact> filteredContacts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredContacts = contacts; // Initially, all contacts are shown
+  }
+
+  void filterContacts(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredContacts = contacts;
+      } else {
+        filteredContacts = contacts
+            .where((contact) => contact.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Contacts App")),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: AssetImage("assets/mavan.jpg"),
+                  ),
+                  SizedBox(height: 10),
+                  Text("Mavan Athapaththu", style: TextStyle(color: Colors.white, fontSize: 18)),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                onChanged: filterContacts,
+              ),
+            ),
+            Expanded(child: ContactList(contacts: filteredContacts)),
+          ],
+        ),
+      ),
+      body: Center(child: Text("Swipe from left to open the drawer!", style: TextStyle(fontSize: 16))),
+    );
+  }
+}
