@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactList extends StatelessWidget {
-  final List<Map<String, String>> contacts = [
+  final List<Map<String, String>> constructors = [
     {
       "name": "Nimal Perera",
       "office": "Colombo 03, Sri Lanka",
@@ -39,36 +40,99 @@ class ContactList extends StatelessWidget {
     }
   ];
 
+  void _makePhoneCall(String phoneNumber) async {
+    final Uri url = Uri.parse("tel:$phoneNumber");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw "Could not launch $phoneNumber";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sri Lankan Constructors"),
+        title: Text("Top Sri Lanka Constructors"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        elevation: 5,
       ),
-      body: ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ListTile(
-              leading: Icon(Icons.engineering, color: Colors.blue),
-              title: Text(contacts[index]["name"]!,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Office: ${contacts[index]["office"]}"),
-                  Text("Projects: ${contacts[index]["projects"]}"),
-                  Text("Contact: ${contacts[index]["contact"]}"),
-                ],
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView.builder(
+          itemCount: constructors.length,
+          itemBuilder: (context, index) {
+            final constructor = constructors[index];
+            return Card(
+              margin: EdgeInsets.symmetric(vertical: 8),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              trailing: Icon(Icons.phone, color: Colors.green),
-              onTap: () {
-                // You can add functionality here, like calling the number
-              },
-            ),
-          );
-        },
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 35,
+                      backgroundImage: AssetImage(constructor["photo"]!),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            constructor["name"]!,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "📍 ${constructor["location"]}",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "🏗️ Projects: ${constructor["projects"]}",
+                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                          ),
+                          SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: () => _makePhoneCall(constructor["contact"]!),
+                            child: Row(
+                              children: [
+                                Icon(Icons.phone, color: Colors.green, size: 18),
+                                SizedBox(width: 5),
+                                Text(
+                                  constructor["contact"]!,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
