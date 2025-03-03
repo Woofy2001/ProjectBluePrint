@@ -3,28 +3,39 @@ import 'package:flutter/material.dart';
 class ContactList extends StatelessWidget {
   final List<Map<String, String>> contacts = [
     {
-      "name": "Rohan Perera",
-      "office": "Colombo, Sri Lanka",
+      "name": "Nimal Perera",
+      "office": "Colombo 03, Sri Lanka",
+      "photo": "assets/con1.jpg",
       "projects": "Lotus Tower, Sky Residences",
       "contact": "+94 77 123 4567"
     },
     {
-      "name": "Kamal Fernando",
+      "name": "Samantha Silva",
       "office": "Kandy, Sri Lanka",
+      "photo": "assets/con2.jpg",
       "projects": "Kandy City Centre, Victoria Golf Resort",
       "contact": "+94 71 987 6543"
     },
     {
-      "name": "Samantha De Silva",
+      "name": "Anura Jayasinghe",
       "office": "Galle, Sri Lanka",
+      "photo": "assets/con3.jpg",
       "projects": "Galle Fort Restoration, Ocean View Apartments",
       "contact": "+94 76 456 7890"
     },
     {
-      "name": "Nimal Jayawardena",
-      "office": "Negombo, Sri Lanka",
-      "projects": "Beachfront Villas, Negombo Lagoon Resort",
+      "name": "Pradeep Wickramasinghe",
+      "office": "Kurunegala, Sri Lanka",
+      "photo": "assets/con4.jpg",
+      "projects": "Beachfront Villas, Kurunegala Lagoon Resort",
       "contact": "+94 77 567 1234"
+    },
+    {
+      "name": "Kumarasinghe Hettiarachchi",
+      "office": "Jaffna, Sri Lanka",
+      "photo": "assets/con5.jpg",
+      "projects": "Hospitals, Public infrastructure",
+      "contact": "+94 71 678 9012"
     }
   ];
 
