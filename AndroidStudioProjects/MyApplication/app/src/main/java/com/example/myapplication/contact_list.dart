@@ -94,7 +94,7 @@ class ContactList extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            "📍 ${constructor["location"]}",
+                            "📍 ${constructor["office"]}",
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.black54,

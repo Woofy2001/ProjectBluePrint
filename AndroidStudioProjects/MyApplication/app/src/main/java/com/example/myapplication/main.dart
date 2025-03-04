@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
       title: 'Contacts App',
       home: Scaffold(
         appBar: AppBar(title: Text("Contacts")),
-        body: ContactList(), // Use your ContactList widget here
+        body: ContactList(),
       ),
     );
   }
