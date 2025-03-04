@@ -1,0 +1,126 @@
+import matplotlib.pyplot as plt
+from shapely.geometry import Polygon
+import os
+import random
+
+def generate_floor_plan(house_data):
+    """Generates a structured 2D floor plan with rooms arranged in a square layout."""
+    width, height = house_data["width"], house_data["height"]
+
+    # Adjust grid size dynamically based on room count
+    total_rooms = sum(house_data["rooms"].values())
+    grid_size = max(5, int((total_rooms + 2) ** 0.5))  # Ensure a square grid large enough
+    base_size = min(width, height) // grid_size
+
+    # Initialize the plot
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    print("Initializing floor plan with width:", width, "and height:", height)
+    print("Grid size calculated:", grid_size)
+
+    # Adjust room dimensions dynamically
+    room_sizes = {
+        "living room": (base_size * 2, base_size * 2),
+        "bedroom": (base_size, base_size),
+        "bathroom": (base_size // 2, base_size // 2),
+        "kitchen": (base_size, base_size),
+        "garage": (base_size * 1.5, base_size * 1.5)
+    }
+
+    print("Room sizes calculated:", room_sizes)
+
+    wall_thickness = 0.5  # Thickness for double walls
+
+    # Define grid-based layout
+    center_x, center_y = grid_size // 2, grid_size // 2
+    occupied_positions = {(center_x, center_y)}
+    placed_rooms = {"living room": (center_x, center_y)}
+
+    # Define adjacency rules
+    adjacency_rules = {
+        "living room": None,
+        "bedroom": "living room",
+        "bathroom": "bedroom",
+        "kitchen": "living room",
+        "garage": "kitchen"
+    }
+
+    print("Adjacency rules:", adjacency_rules)
+
+    # Function to find a valid position in the grid
+    def find_grid_position(ref_x, ref_y):
+        print("Finding position for room near:", (ref_x, ref_y))
+        possible_positions = [
+            (ref_x + 1, ref_y),  # Right
+            (ref_x - 1, ref_y),  # Left
+            (ref_x, ref_y + 1),  # Above
+            (ref_x, ref_y - 1)   # Below
+        ]
+        random.shuffle(possible_positions)
+        for new_x, new_y in possible_positions:
+            if (new_x, new_y) not in occupied_positions and 0 <= new_x < grid_size and 0 <= new_y < grid_size:
+                occupied_positions.add((new_x, new_y))
+                return new_x, new_y
+        return None, None
+
+    # Function to draw rooms
+    def draw_room(ax, grid_x, grid_y, width, height, label, color):
+        x = grid_x * base_size
+        y = grid_y * base_size
+        print("Drawing room:", label, "at grid position:", (grid_x, grid_y))
+        outer_polygon = Polygon([
+            (x, y), 
+            (x + width, y), 
+            (x + width, y + height), 
+            (x, y + height)
+        ])
+        inner_polygon = Polygon([
+            (x + wall_thickness, y + wall_thickness), 
+            (x + width - wall_thickness, y + wall_thickness), 
+            (x + width - wall_thickness, y + height - wall_thickness), 
+            (x + wall_thickness, y + height - wall_thickness)
+        ])
+        ax.fill(*outer_polygon.exterior.xy, alpha=0.5, label=label, color=color)
+        ax.plot(*outer_polygon.exterior.xy, color="black", linewidth=2)
+        ax.plot(*inner_polygon.exterior.xy, color="black", linewidth=2)
+        ax.text(x + width / 2, y + height / 2, label, fontsize=8, color="black", ha="center", va="center")
+
+    # Generate and place rooms
+    room_list = ["living room"]  # Start with living room in the center
+    for room, count in house_data["rooms"].items():
+        room_list.extend([room] * count)
+    
+    print("Room list after ordering:", room_list)
+    
+    for room_name in room_list:
+        if room_name == "living room":
+            continue  # Living room is already placed
+        
+        ref_room = adjacency_rules.get(room_name, "living room")
+        if ref_room not in placed_rooms:
+            print("Error: Reference room not found for", room_name)
+            continue
+        
+        ref_x, ref_y = placed_rooms[ref_room]
+        new_x, new_y = find_grid_position(ref_x, ref_y)
+        
+        if new_x is not None and new_y is not None:
+            placed_rooms[room_name] = (new_x, new_y)
+            room_width, room_height = room_sizes[room_name]
+            draw_room(ax, new_x, new_y, room_width, room_height, room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
+        else:
+            print("Warning: No valid position found for", room_name)
+
+    # Set the plot limits and title
+    ax.set_xlim(0, width)
+    ax.set_ylim(0, height)
+    ax.set_title("Generated 2D Floor Plan - Square Layout with Room Labels")
+    ax.legend()
+
+    # Save and show the floor plan
+    save_path = "assets/generated_plans"
+    os.makedirs(save_path, exist_ok=True)
+    plt.savefig(os.path.join(save_path, "floor_plan.png"))
+    plt.show()
+    
+    print("Floor plan generation complete.")
