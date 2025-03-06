@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/contact_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,10 +10,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Contacts App',
-      home: Scaffold(
-        appBar: AppBar(title: Text("Contacts")),
-        body: ContactList(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey[200],
       ),
+      home: ConstructorListScreen(),
     );
   }
 }
@@ -23,16 +26,46 @@ class Constructor {
   final String projects;
   final String contact;
 
-  Constructor({required this.name, required this.location, required this.projects, required this.contact});
+  Constructor({
+    required this.name,
+    required this.location,
+    required this.projects,
+    required this.contact,
+  });
 }
 
 class ConstructorListScreen extends StatelessWidget {
   final List<Constructor> constructors = [
-    Constructor(name: "Nimal Perera", location: "Colombo 03", projects: "High-rise buildings, Bridges", contact: "+94 71 234 5678"),
-    Constructor(name: "Samantha Silva", location: "Kandy", projects: "Housing complexes, Roads", contact: "+94 76 345 6789"),
-    Constructor(name: "Anura Jayasinghe", location: "Galle", projects: "Hotels, Resorts", contact: "+94 77 456 7890"),
-    Constructor(name: "Pradeep Wickramasinghe", location: "Kurunegala", projects: "Commercial buildings, Apartments", contact: "+94 75 567 8901"),
-    Constructor(name: "Kumarasinghe Hettiarachchi", location: "Jaffna", projects: "Hospitals, Public infrastructure", contact: "+94 71 678 9012"),
+    Constructor(
+      name: "Nimal Perera",
+      location: "Colombo 03",
+      projects: "High-rise buildings, Bridges",
+      contact: "+94 71 234 5678",
+    ),
+    Constructor(
+      name: "Samantha Silva",
+      location: "Kandy",
+      projects: "Housing complexes, Roads",
+      contact: "+94 76 345 6789",
+    ),
+    Constructor(
+      name: "Anura Jayasinghe",
+      location: "Galle",
+      projects: "Hotels, Resorts",
+      contact: "+94 77 456 7890",
+    ),
+    Constructor(
+      name: "Pradeep Wickramasinghe",
+      location: "Kurunegala",
+      projects: "Commercial buildings, Apartments",
+      contact: "+94 75 567 8901",
+    ),
+    Constructor(
+      name: "Kumarasinghe Hettiarachchi",
+      location: "Jaffna",
+      projects: "Hospitals, Public infrastructure",
+      contact: "+94 71 678 9012",
+    ),
   ];
 
   @override
@@ -46,7 +79,10 @@ class ConstructorListScreen extends StatelessWidget {
           return Card(
             margin: EdgeInsets.all(8.0),
             child: ListTile(
-              title: Text(constructor.name, style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                constructor.name,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

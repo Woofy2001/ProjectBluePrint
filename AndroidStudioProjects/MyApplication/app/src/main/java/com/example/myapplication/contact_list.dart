@@ -8,36 +8,36 @@ class ContactList extends StatelessWidget {
       "office": "Colombo 03, Sri Lanka",
       "photo": "assets/con1.jpg",
       "projects": "Lotus Tower, Sky Residences",
-      "contact": "+94 77 123 4567"
+      "contact": "+94 77 123 4567",
     },
     {
       "name": "Samantha Silva",
       "office": "Kandy, Sri Lanka",
       "photo": "assets/con2.jpg",
       "projects": "Kandy City Centre, Victoria Golf Resort",
-      "contact": "+94 71 987 6543"
+      "contact": "+94 71 987 6543",
     },
     {
       "name": "Anura Jayasinghe",
       "office": "Galle, Sri Lanka",
       "photo": "assets/con3.jpg",
       "projects": "Galle Fort Restoration, Ocean View Apartments",
-      "contact": "+94 76 456 7890"
+      "contact": "+94 76 456 7890",
     },
     {
       "name": "Pradeep Wickramasinghe",
       "office": "Kurunegala, Sri Lanka",
       "photo": "assets/con4.jpg",
       "projects": "Beachfront Villas, Kurunegala Lagoon Resort",
-      "contact": "+94 77 567 1234"
+      "contact": "+94 77 567 1234",
     },
     {
       "name": "Kumarasinghe Hettiarachchi",
       "office": "Jaffna, Sri Lanka",
       "photo": "assets/con5.jpg",
       "projects": "Hospitals, Public infrastructure",
-      "contact": "+94 71 678 9012"
-    }
+      "contact": "+94 71 678 9012",
+    },
   ];
 
   void _makePhoneCall(String phoneNumber) async {
@@ -103,14 +103,22 @@ class ContactList extends StatelessWidget {
                           SizedBox(height: 4),
                           Text(
                             "🏗️ Projects: ${constructor["projects"]}",
-                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
                           ),
                           SizedBox(height: 6),
                           GestureDetector(
-                            onTap: () => _makePhoneCall(constructor["contact"]!),
+                            onTap:
+                                () => _makePhoneCall(constructor["contact"]!),
                             child: Row(
                               children: [
-                                Icon(Icons.phone, color: Colors.green, size: 18),
+                                Icon(
+                                  Icons.phone,
+                                  color: Colors.green,
+                                  size: 18,
+                                ),
                                 SizedBox(width: 5),
                                 Text(
                                   constructor["contact"]!,
@@ -139,7 +147,5 @@ class ContactList extends StatelessWidget {
 }
 
 void main() {
-  runApp(MaterialApp(
-    home: ContactList(),
-  ));
+  runApp(MaterialApp(home: ContactList()));
 }
