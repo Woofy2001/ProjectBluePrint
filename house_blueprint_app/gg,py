@@ -4,7 +4,7 @@ import os
 import random
 
 def generate_floor_plan(house_data):
-    """Generates a structured 2D floor plan with rooms arranged in a square layout."""
+    """Generates a structured 2D floor plan with rooms arranged in a compact, connected layout."""
     width, height = house_data["width"], house_data["height"]
 
     # Adjust grid size dynamically based on room count
@@ -47,7 +47,7 @@ def generate_floor_plan(house_data):
 
     print("Adjacency rules:", adjacency_rules)
 
-    # Function to find a valid position in the grid
+    # Function to find a valid position in the grid ensuring adjacency
     def find_grid_position(ref_x, ref_y):
         print("Finding position for room near:", (ref_x, ref_y))
         possible_positions = [
@@ -85,7 +85,7 @@ def generate_floor_plan(house_data):
         ax.plot(*inner_polygon.exterior.xy, color="black", linewidth=2)
         ax.text(x + width / 2, y + height / 2, label, fontsize=8, color="black", ha="center", va="center")
 
-    # Generate and place rooms
+    # Generate and place rooms ensuring all are included
     room_list = ["living room"]  # Start with living room in the center
     for room, count in house_data["rooms"].items():
         room_list.extend([room] * count)
@@ -110,6 +110,17 @@ def generate_floor_plan(house_data):
             draw_room(ax, new_x, new_y, room_width, room_height, room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
         else:
             print("Warning: No valid position found for", room_name)
+
+    # Ensure all rooms are included; attempt to place any missing rooms
+    missing_rooms = set(house_data["rooms"]).difference(placed_rooms)
+    for room_name in missing_rooms:
+        new_x, new_y = find_grid_position(center_x, center_y)
+        if new_x is not None and new_y is not None:
+            placed_rooms[room_name] = (new_x, new_y)
+            room_width, room_height = room_sizes[room_name]
+            draw_room(ax, new_x, new_y, room_width, room_height, room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
+        else:
+            print("Critical Warning: Could not place room", room_name)
 
     # Set the plot limits and title
     ax.set_xlim(0, width)
