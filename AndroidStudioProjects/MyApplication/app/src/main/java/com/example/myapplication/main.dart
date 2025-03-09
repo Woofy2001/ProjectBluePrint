@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart'; // Importing the Login Page
 
 void main() {
   runApp(MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[200],
       ),
-      home: ConstructorListScreen(),
+      home: LoginPage(), // Redirect to Login Page first
     );
   }
 }
@@ -82,18 +83,16 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
 
   void filterSearch(String query) {
     setState(() {
-      if (query.isEmpty) {
-        filteredConstructors = constructors;
-      } else {
-        filteredConstructors =
-            constructors
-                .where(
-                  (c) =>
-                      c.name.toLowerCase().contains(query.toLowerCase()) ||
-                      c.location.toLowerCase().contains(query.toLowerCase()),
-                )
-                .toList();
-      }
+      filteredConstructors =
+          query.isEmpty
+              ? constructors
+              : constructors
+                  .where(
+                    (c) =>
+                        c.name.toLowerCase().contains(query.toLowerCase()) ||
+                        c.location.toLowerCase().contains(query.toLowerCase()),
+                  )
+                  .toList();
     });
   }
 
@@ -107,6 +106,13 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
           contact: "+94 70 000 0000",
         ),
       );
+      filteredConstructors = constructors;
+    });
+  }
+
+  void removeConstructor(int index) {
+    setState(() {
+      constructors.removeAt(index);
       filteredConstructors = constructors;
     });
   }
@@ -143,9 +149,9 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Location: ${constructor.location}"),
-                        Text("Projects: ${constructor.projects}"),
-                        Text("Contact: ${constructor.contact}"),
+                        Text("📍 Location: ${constructor.location}"),
+                        Text("🏗️ Projects: ${constructor.projects}"),
+                        Text("📞 Contact: ${constructor.contact}"),
                       ],
                     ),
                     leading: Icon(Icons.business, color: Colors.blue),
@@ -160,6 +166,9 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
                               ),
                         ),
                       );
+                    },
+                    onLongPress: () {
+                      removeConstructor(index);
                     },
                   ),
                 );
