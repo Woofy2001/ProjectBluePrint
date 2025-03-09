@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/contact_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,8 +33,13 @@ class Constructor {
   });
 }
 
-class ConstructorListScreen extends StatelessWidget {
-  final List<Constructor> constructors = [
+class ConstructorListScreen extends StatefulWidget {
+  @override
+  _ConstructorListScreenState createState() => _ConstructorListScreenState();
+}
+
+class _ConstructorListScreenState extends State<ConstructorListScreen> {
+  List<Constructor> constructors = [
     Constructor(
       name: "Nimal Perera",
       location: "Colombo 03",
@@ -68,33 +72,150 @@ class ConstructorListScreen extends StatelessWidget {
     ),
   ];
 
+  List<Constructor> filteredConstructors = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredConstructors = constructors;
+  }
+
+  void filterSearch(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredConstructors = constructors;
+      } else {
+        filteredConstructors =
+            constructors
+                .where(
+                  (c) =>
+                      c.name.toLowerCase().contains(query.toLowerCase()) ||
+                      c.location.toLowerCase().contains(query.toLowerCase()),
+                )
+                .toList();
+      }
+    });
+  }
+
+  void addNewConstructor() {
+    setState(() {
+      constructors.add(
+        Constructor(
+          name: "New Constructor",
+          location: "Unknown",
+          projects: "Various",
+          contact: "+94 70 000 0000",
+        ),
+      );
+      filteredConstructors = constructors;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Constructors in Sri Lanka")),
-      body: ListView.builder(
-        itemCount: constructors.length,
-        itemBuilder: (context, index) {
-          final constructor = constructors[index];
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(
-                constructor.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: filterSearch,
+              decoration: InputDecoration(
+                labelText: "Search by Name or Location",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
               ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Location: ${constructor.location}"),
-                  Text("Projects: ${constructor.projects}"),
-                  Text("Contact: ${constructor.contact}"),
-                ],
-              ),
-              leading: Icon(Icons.business, color: Colors.blue),
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredConstructors.length,
+              itemBuilder: (context, index) {
+                final constructor = filteredConstructors[index];
+                return Card(
+                  margin: EdgeInsets.all(8.0),
+                  child: ListTile(
+                    title: Text(
+                      constructor.name,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Location: ${constructor.location}"),
+                        Text("Projects: ${constructor.projects}"),
+                        Text("Contact: ${constructor.contact}"),
+                      ],
+                    ),
+                    leading: Icon(Icons.business, color: Colors.blue),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => ConstructorDetailScreen(
+                                constructor: constructor,
+                              ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addNewConstructor,
+        child: Icon(Icons.add),
+        tooltip: "Add Constructor",
+      ),
+    );
+  }
+}
+
+class ConstructorDetailScreen extends StatelessWidget {
+  final Constructor constructor;
+
+  ConstructorDetailScreen({required this.constructor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(constructor.name)),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Card(
+          elevation: 5,
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  constructor.name,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "📍 Location: ${constructor.location}",
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  "🏗️ Projects: ${constructor.projects}",
+                  style: TextStyle(fontSize: 16),
+                ),
+                Text(
+                  "📞 Contact: ${constructor.contact}",
+                  style: TextStyle(fontSize: 16, color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
