@@ -2,74 +2,95 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 import os
 import random
+import math
 
 def generate_floor_plan(house_data):
-    """Generates a structured 2D floor plan with rooms placed adjacently, avoiding floating and ensuring randomness."""
-    width, height = house_data["width"], house_data["height"]
+    """Generates a structured 2D floor plan with dynamically scaled rooms, ensuring proper adjacency and no missing placements."""
+    
+    # Calculate dynamic canvas size based on number of rooms
+    base_width, base_height = house_data["width"], house_data["height"]
+    total_rooms = sum(house_data["rooms"].values())
+    canvas_scaling_factor = max(1, math.ceil(total_rooms / 5))  # Auto-adjust size
+    width, height = base_width * canvas_scaling_factor, base_height * canvas_scaling_factor
 
-    fig, ax = plt.subplots(figsize=(16, 12))  # Optimized canvas size
-    print("Initializing floor plan with width:", width, "and height:", height)
+    fig, ax = plt.subplots(figsize=(12, 9))  # Optimized canvas size
+    print(f"Initializing floor plan with width: {width} and height: {height}")
 
-    # Define smaller rectangular room sizes for better fit
+    # Define proportional room sizes dynamically
+    base_size = max(5, min(width, height) // 7)  # Minimum room size enforced
     room_sizes = {
-        "living room": (12, 8),
-        "bedroom": (8, 6),
-        "bathroom": (5, 4),
-        "kitchen": (10, 6),
-        "garage": (14, 8)
+        "living room": (base_size * 2, base_size * 1.5),
+        "bedroom": (base_size * 1.2, base_size),
+        "bathroom": (base_size * 0.8, base_size * 0.7),
+        "kitchen": (base_size * 1.5, base_size),
+        "garage": (base_size * 2, base_size * 1.2)
     }
 
     occupied_positions = set()
     placed_rooms = {}
+    room_coords = {}
     adjacency_rules = {
         "bedroom": ["living room", "bathroom"],
         "bathroom": ["bedroom", "kitchen"],
-        "kitchen": ["living room"],
+        "kitchen": ["living room", "garage"],
         "garage": ["kitchen", "living room"]
     }
 
+    def check_overlap(x, y, width, height):
+        """Check if a room overlaps with existing ones."""
+        for (ox, oy, ow, oh) in occupied_positions:
+            if not (x + width <= ox or x >= ox + ow or y + height <= oy or y >= oy + oh):
+                return True  # Overlapping detected
+        return False
+
     def find_adjacent_position(ref_x, ref_y, room_w, room_h):
+        """Finds a valid adjacent position while avoiding overlaps."""
         possible_positions = [
-            (ref_x + room_w + 1, ref_y), (ref_x - room_w - 1, ref_y),
-            (ref_x, ref_y + room_h + 1), (ref_x, ref_y - room_h - 1)
+            (ref_x + room_w, ref_y), (ref_x - room_w, ref_y),
+            (ref_x, ref_y + room_h), (ref_x, ref_y - room_h)
         ]
         random.shuffle(possible_positions)
         for new_x, new_y in possible_positions:
-            if (new_x, new_y) not in occupied_positions:
-                occupied_positions.add((new_x, new_y))
+            if not check_overlap(new_x, new_y, room_w, room_h):
+                occupied_positions.add((new_x, new_y, room_w, room_h))
                 return new_x, new_y
         return None, None
 
     def draw_room(ax, x, y, width, height, label, color):
+        """Draws a room as a rectangle on the floor plan."""
         outer_polygon = Polygon([
             (x, y), (x + width, y), (x + width, y + height), (x, y + height)
         ])
         ax.fill(*outer_polygon.exterior.xy, alpha=0.5, label=label, color=color)
-        ax.plot(*outer_polygon.exterior.xy, color="black", linewidth=3)
-        ax.text(x + width / 2, y + height / 2, label, fontsize=10, color="black", ha="center", va="center")
+        ax.plot(*outer_polygon.exterior.xy, color="black", linewidth=2)
+        ax.text(x + width / 2, y + height / 2, label, fontsize=9, color="black", ha="center", va="center")
         return (x, y, width, height)
 
     def add_doorway_gap(ax, room1, room2):
+        """Creates a small doorway gap between two adjacent rooms."""
         x1, y1, w1, h1 = room1
         x2, y2, w2, h2 = room2
 
         if abs(x1 - x2) < w1:  # Vertical adjacency
             door_x = (x1 + x2 + w1) / 2
             door_y = max(y1, y2) + 0.5
-            ax.plot([door_x - 0.8, door_x + 0.8], [door_y, door_y], color="white", linewidth=6)
+            ax.plot([door_x - 0.5, door_x + 0.5], [door_y, door_y], color="white", linewidth=5)
         else:  # Horizontal adjacency
             door_x = max(x1, x2) + 0.5
             door_y = (y1 + y2 + h1) / 2
-            ax.plot([door_x, door_x], [door_y - 0.8, door_y + 0.8], color="white", linewidth=6)
+            ax.plot([door_x, door_x], [door_y - 0.5, door_y + 0.5], color="white", linewidth=5)
 
-    # Start placing rooms
-    start_x, start_y = 10, 10  # Start position for layout
-    occupied_positions.add((start_x, start_y))
-    placed_rooms["living room"] = (start_x, start_y)
-    room_coords = {"living room": draw_room(ax, start_x, start_y, *room_sizes["living room"], "living room", "lightgray")}
+    # Place the living room at the center of the canvas
+    center_x, center_y = width // 3, height // 2
+    occupied_positions.add((center_x, center_y, *room_sizes["living room"]))
+    placed_rooms["living room"] = (center_x, center_y)
+    room_coords["living room"] = draw_room(ax, center_x, center_y, *room_sizes["living room"], "living room", "lightgray")
 
-    for room_name in house_data["rooms"]:
-        for _ in range(house_data["rooms"][room_name]):
+    for room_name, room_count in house_data["rooms"].items():
+        for _ in range(room_count):
+            if room_name == "living room" and "living room" in placed_rooms:
+                continue  # Ensure only one living room is placed
+
             ref_rooms = adjacency_rules.get(room_name, ["living room"])
             placed = False
             random.shuffle(ref_rooms)
@@ -78,19 +99,29 @@ def generate_floor_plan(house_data):
                     ref_x, ref_y = placed_rooms[ref_room]
                     new_x, new_y = find_adjacent_position(ref_x, ref_y, *room_sizes[room_name])
                     if new_x is not None and new_y is not None:
+                        occupied_positions.add((new_x, new_y, *room_sizes[room_name]))
                         placed_rooms[room_name] = (new_x, new_y)
                         room_coords[room_name] = draw_room(ax, new_x, new_y, *room_sizes[room_name], room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
                         add_doorway_gap(ax, room_coords[ref_room], room_coords[room_name])
                         placed = True
                         break
+            if not placed:
+                print(f"⚠ Warning: {room_name} was not placed. Expanding search range.")
+                for _ in range(5):  # Allow more retries with varied offsets
+                    new_x, new_y = random.randint(0, width - int(room_sizes[room_name][0])), random.randint(0, height - int(room_sizes[room_name][1]))
+                    if not check_overlap(new_x, new_y, *room_sizes[room_name]):
+                        occupied_positions.add((new_x, new_y, *room_sizes[room_name]))
+                        placed_rooms[room_name] = (new_x, new_y)
+                        room_coords[room_name] = draw_room(ax, new_x, new_y, *room_sizes[room_name], room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
+                        break
 
     ax.set_xlim(0, width)
     ax.set_ylim(0, height)
-    ax.set_title("Generated 2D Floor Plan - Optimized Layout with Doorway Gaps")
+    ax.set_title("Generated 2D Floor Plan - Optimized Layout with Doorway Gaps & Randomization")
     ax.legend()
 
     save_path = "assets/generated_plans"
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, "floor_plan.png"))
     plt.show()
-    print("Floor plan generation complete.")
+    print("✅ Floor plan generation complete.")
