@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'contact_list.dart'; // Import contact list page
+import 'contact_list.dart'; // Import the constructor list page
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,9 +19,9 @@ class _LoginPageState extends State<LoginPage> {
 
       // Simple authentication (Replace with real auth logic)
       if (email == "constructor@example.com" && password == "123456") {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ContactList()),
+          MaterialPageRoute(builder: (context) => ConstructorListScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -78,7 +78,11 @@ class _LoginPageState extends State<LoginPage> {
                     labelText: "Password",
                     prefixIcon: Icon(Icons.lock),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -104,7 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   ),
-                  child: Text("Login", style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
               ],
             ),
