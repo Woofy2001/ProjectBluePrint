@@ -6,10 +6,13 @@ from floor_plan.cad_exporter import export_to_cad
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
 
+# ✅ Serve static files (Ensure this is added)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Allow all origins, methods, and headers (for testing)
 app.add_middleware(
