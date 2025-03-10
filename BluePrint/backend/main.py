@@ -3,9 +3,25 @@ from fastapi.responses import FileResponse
 from floor_plan.text_processor import extract_house_details
 from floor_plan.plan_generator import generate_floor_plan
 from floor_plan.cad_exporter import export_to_cad
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
+
 app = FastAPI()
+
+
+# Allow all origins, methods, and headers (for testing)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict this to your Flutter app domain
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],  # Ensure OPTIONS is allowed
+    allow_headers=["*"],
+)
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to Blueprint API"}
 
 # Ensure static folder exists
 os.makedirs("static", exist_ok=True)
@@ -28,6 +44,8 @@ async def export_cad():
     house_data = {"rooms": {"bedroom": 3, "bathroom": 2}, "width": 50, "height": 40}
     export_to_cad(house_data)
     return FileResponse("static/floor_plan.dxf", media_type="application/dxf")
+
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,7 +1,7 @@
 import os
 import ezdxf
 
-def export_to_cad(house_data, filename="assets/generated_plans/floor_plan.dxf"):
+def export_to_cad(house_data, filename="static/floor_plan.dxf"):
     """Exports the generated floor plan to a DXF (CAD) file."""
     
     # Ensure directory exists

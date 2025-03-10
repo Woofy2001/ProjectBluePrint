@@ -1,5 +1,6 @@
 name: blueprint_app
-description: A mobile app for generating 2D floor plans based on user input.
+description: A mobile app for generating 2D floor plans.
+
 publish_to: "none"
 
 version: 1.0.0+1
@@ -11,8 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.0   # HTTP package for API calls
-  provider: ^6.0.5   # For state management (optional)
-  cached_network_image: ^3.2.3  # Cache images (useful for displaying floor plans)
+  provider: ^6.0.5   # State management (optional)
+  cached_network_image: ^3.2.3  # To cache and display floor plan images
+  google_fonts: ^4.0.4  # Custom fonts support
 
 dev_dependencies:
   flutter_test:
@@ -21,6 +23,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/   # Directory to store UI assets (if needed)
-
-
+    - assets/  # Add your assets folder if needed

@@ -120,7 +120,7 @@ def generate_floor_plan(house_data):
     ax.set_title("Generated 2D Floor Plan - Optimized Layout with Doorway Gaps & Randomization")
     ax.legend()
 
-    save_path = "assets/generated_plans"
+    save_path = "static/"
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, "floor_plan.png"))
     plt.show()

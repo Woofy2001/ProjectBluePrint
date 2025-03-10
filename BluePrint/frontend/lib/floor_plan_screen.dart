@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'api_service.dart';
 
-class FloorPlanScreen extends StatefulWidget {
-  @override
-  _FloorPlanScreenState createState() => _FloorPlanScreenState();
-}
+class FloorPlanScreen extends StatelessWidget {
+  final String imageUrl;
 
-class _FloorPlanScreenState extends State<FloorPlanScreen> {
-  String imageUrl = "";
-
-  void generateFloorPlan() async {
-    String url = await generatePlan("3 bedroom, 2 bathroom, 1 kitchen");
-    setState(() {
-      imageUrl = "http://your-server-ip:8000" + url;
-    });
-  }
+  FloorPlanScreen({required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Generated Floor Plan")),
-      body: Column(
-        children: [
-          ElevatedButton(
-              onPressed: generateFloorPlan, child: Text("Generate Floor Plan")),
-          imageUrl.isNotEmpty
-              ? Image.network(imageUrl)
-              : Text("No plan generated yet")
-        ],
+      backgroundColor: Colors.blue.shade200,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          "BluePrint",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Image.network(imageUrl),
       ),
     );
   }
