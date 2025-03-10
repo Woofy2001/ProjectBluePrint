@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "431201351832",
+    "project_id": "blueprint-login-7be93",
+    "storage_bucket": "blueprint-login-7be93.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431201351832:android:19d80603e85408f3b938ed",
+        "android_client_info": {
+          "package_name": "com.example.blueprint_login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiYAnv8n-m1OASDQ9uzCSel2xDPBkT9Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

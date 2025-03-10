@@ -1,0 +1,35 @@
+name: blueprint_login
+description: "A new Flutter project."
+
+# Prevents accidental publishing to pub.dev
+publish_to: 'none' 
+
+# Version and build number
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+# Dependencies
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Essential dependencies
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0  # ✅ Removed duplicate 'flutter:' section
+  font_awesome_flutter: ^10.8.0
+  cloud_firestore: ^5.6.5
+  firebase_auth: ^5.5.1
+  firebase_storage: ^12.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Recommended linting package
+  flutter_lints: ^5.0.0
+
+# Flutter-specific configurations
+flutter:
+  uses-material-design: true
