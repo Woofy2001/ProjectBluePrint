@@ -1,0 +1,5 @@
+nltk
+shapely
+matplotlib
+ezdxf
+tkinter
