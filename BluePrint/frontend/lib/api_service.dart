@@ -10,8 +10,11 @@ Future<String> generatePlan(String userInput) async {
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
-    String imagePath = data['image_url'];
-    return "http://127.0.0.1:8000" + imagePath;  // ✅ Correct concatenation
+    // ✅ Append timestamp to force image reload
+    String imageUrl = "http://127.0.0.1:8000" +
+        data['image_url'] +
+        "?t=${DateTime.now().millisecondsSinceEpoch}";
+    return imageUrl;
   } else {
     throw Exception("Error generating floor plan: ${response.statusCode}");
   }

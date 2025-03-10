@@ -4,52 +4,74 @@ from floor_plan.text_processor import extract_house_details
 from floor_plan.plan_generator import generate_floor_plan
 from floor_plan.cad_exporter import export_to_cad
 from fastapi import FastAPI
+from pydantic import BaseModel 
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from fastapi.staticfiles import StaticFiles
+import json
 
 
 app = FastAPI()
 
-# ✅ Serve static files (Ensure this is added)
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Allow all origins, methods, and headers (for testing)
+# ✅ Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict this to your Flutter app domain
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],  # Ensure OPTIONS is allowed
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+class HouseRequest(BaseModel):
+    text: str
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Blueprint API"}
 
-# Ensure static folder exists
-os.makedirs("static", exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# ✅ Extract house details with validation
 @app.post("/extract")
-async def extract_details(request: Request):
-    data = await request.json()
-    house_data = extract_house_details(data["text"])
+def extract_details(request: HouseRequest):
+    house_data = extract_house_details(request.text)
+    
+    # If validation fails, return an error response
+    if "error" in house_data:
+        raise HTTPException(status_code=400, detail=house_data["error"])
+
     return {"house_data": house_data}
 
+# ✅ Generate floor plan only if prompt is valid
 @app.post("/generate-plan")
-async def generate_plan(request: Request):
-    data = await request.json()
-    house_data = extract_house_details(data["text"])
-    generate_floor_plan(house_data)
-    return {"message": "Floor plan generated", "image_url": "/static/floor_plan.png"}
+def generate_plan(request: HouseRequest):
+    try:
+        # ✅ Convert input text to structured house data
+        house_data = extract_house_details(request.text)
 
+        # ✅ If invalid input, return an error
+        if "error" in house_data:
+            raise HTTPException(status_code=400, detail=house_data["error"])
+
+        # ✅ Ensure `house_data` is a dictionary
+        if isinstance(house_data, str):
+            house_data = json.loads(house_data)  # Convert string to dictionary
+
+        # ✅ Generate floor plan image
+        image_path = generate_floor_plan(house_data)
+
+        return {"message": "Floor plan generated", "image_url": f"/static/{image_path}"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ✅ Export floor plan to CAD
 @app.get("/export-cad")
-async def export_cad():
-    house_data = {"rooms": {"bedroom": 3, "bathroom": 2}, "width": 50, "height": 40}
-    export_to_cad(house_data)
-    return FileResponse("static/floor_plan.dxf", media_type="application/dxf")
+def export_cad():
+    dxf_path = export_to_cad()
+    return {"message": "CAD file exported", "cad_url": f"/static/{dxf_path}"}
 
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# ✅ Ensure the `static/` folder exists
+if not os.path.exists("static"):
+    os.makedirs("static")

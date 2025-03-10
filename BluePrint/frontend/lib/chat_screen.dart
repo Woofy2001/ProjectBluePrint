@@ -7,76 +7,68 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  String? imageUrl;
-  bool isLoading = false;
+  TextEditingController _controller = TextEditingController();
+  String? _imageUrl;
+  String? _errorMessage;
+  bool _isLoading = false;
 
-  void sendPrompt() async {
-    if (_controller.text.isEmpty) return;
+  void _sendPrompt() async {
     setState(() {
-      isLoading = true;
+      _errorMessage = null;
+      _imageUrl = null; // ✅ Clear the old image before loading a new one
+      _isLoading = true;
     });
 
-    String response = await generatePlan(_controller.text);
-    setState(() {
-      imageUrl = response;
-      isLoading = false;
-    });
+    try {
+      String imageUrl = await generatePlan(_controller.text);
+      setState(() {
+        _imageUrl = imageUrl;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString().replaceAll("Exception:", "").trim();
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade200,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          "BluePrint",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text("Blueprint App")),
       body: Column(
         children: [
           Expanded(
             child: Center(
-              child: isLoading
-                  ? CircularProgressIndicator()
-                  : imageUrl == null
-                      ? Text(
-                          "Hi there human, I'm Blu.\nYour personal house planning assistant.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        )
-                      : Image.network(imageUrl!),
+              child: _isLoading
+                  ? CircularProgressIndicator() // ✅ Show a loading spinner
+                  : _errorMessage != null
+                      ? Text(_errorMessage!,
+                          style: TextStyle(color: Colors.red, fontSize: 16))
+                      : _imageUrl != null
+                          ? Image.network(
+                              _imageUrl!) // ✅ UI refreshes with the new image
+                          : Text(
+                              "Enter a house description to generate a floor plan."),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: "Enter your prompt...",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                      hintText: "Enter house description...",
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
-                FloatingActionButton(
-                  onPressed: sendPrompt,
-                  child: Icon(Icons.send),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: _sendPrompt,
                 ),
               ],
             ),

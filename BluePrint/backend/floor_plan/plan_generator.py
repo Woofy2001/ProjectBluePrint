@@ -120,8 +120,16 @@ def generate_floor_plan(house_data):
     ax.set_title("Generated 2D Floor Plan - Optimized Layout with Doorway Gaps & Randomization")
     ax.legend()
 
-    save_path = "static/"
-    os.makedirs(save_path, exist_ok=True)
-    plt.savefig(os.path.join(save_path, "floor_plan.png"))
-    plt.show()
-    print("✅ Floor plan generation complete.")
+    # ✅ Ensure 'static/' directory exists
+    output_dir = "static"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # ✅ Save image to the correct path
+    image_path = os.path.join(output_dir, "floor_plan.png")
+    plt.savefig(image_path, format="png", dpi=100, bbox_inches="tight")
+    plt.close(fig)  # ✅ Prevent memory issues
+
+    print(f"✅ Floor plan saved at {image_path}")  # Debugging print
+
+    return "floor_plan.png"  # ✅ Return only the filename
