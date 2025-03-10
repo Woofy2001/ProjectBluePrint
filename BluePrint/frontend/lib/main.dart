@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'screens/blueprint_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,9 +13,8 @@ class MyApp extends StatelessWidget {
       title: 'Blueprint App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: ThemeData.light().textTheme,
       ),
-      home: HomeScreen(), // Redirect to home screen
+      home: BlueprintScreen(),
     );
   }
 }

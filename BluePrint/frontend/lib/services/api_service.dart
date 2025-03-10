@@ -3,7 +3,7 @@ import 'dart:convert';
 
 Future<String> generatePlan(String userInput) async {
   final response = await http.post(
-    Uri.parse("http://127.0.0.1:8000/generate-plan"),
+    Uri.parse("http://10.0.2.2:8000/generate-plan"),
     headers: {"Content-Type": "application/json"},
     body: jsonEncode({"text": userInput}),
   );
@@ -11,7 +11,7 @@ Future<String> generatePlan(String userInput) async {
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     // ✅ Append timestamp to force image reload
-    String imageUrl = "http://127.0.0.1:8000" +
+    String imageUrl = "http://10.0.2.2:8000" +
         data['image_url'] +
         "?t=${DateTime.now().millisecondsSinceEpoch}";
     return imageUrl;
