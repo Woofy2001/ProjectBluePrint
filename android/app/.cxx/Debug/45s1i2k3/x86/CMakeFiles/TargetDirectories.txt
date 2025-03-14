@@ -1,0 +1,2 @@
+/Users/rishara/Downloads/new_blueprint_project/android/app/.cxx/Debug/45s1i2k3/x86/CMakeFiles/edit_cache.dir
+/Users/rishara/Downloads/new_blueprint_project/android/app/.cxx/Debug/45s1i2k3/x86/CMakeFiles/rebuild_cache.dir
