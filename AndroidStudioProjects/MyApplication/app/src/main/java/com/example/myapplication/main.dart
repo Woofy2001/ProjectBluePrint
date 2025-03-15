@@ -78,14 +78,14 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
   @override
   void initState() {
     super.initState();
-    filteredConstructors = constructors;
+    filteredConstructors = List.from(constructors);
   }
 
   void filterSearch(String query) {
     setState(() {
       filteredConstructors =
           query.isEmpty
-              ? constructors
+              ? List.from(constructors)
               : constructors
                   .where(
                     (c) =>
@@ -106,14 +106,16 @@ class _ConstructorListScreenState extends State<ConstructorListScreen> {
           contact: "+94 70 000 0000",
         ),
       );
-      filteredConstructors = constructors;
+      filteredConstructors = List.from(constructors);
     });
   }
 
   void removeConstructor(int index) {
     setState(() {
-      constructors.removeAt(index);
-      filteredConstructors = constructors;
+      constructors.removeWhere(
+        (constructor) => constructor.name == filteredConstructors[index].name,
+      );
+      filteredConstructors = List.from(constructors);
     });
   }
 
