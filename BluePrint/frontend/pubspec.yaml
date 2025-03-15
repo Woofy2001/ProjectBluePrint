@@ -15,13 +15,13 @@ dependencies:
   provider: any
   cached_network_image: any
   google_fonts: any
-  url_launcher: any
   permission_handler: any
   firebase_core: any
   firebase_auth: any
   cloud_firestore: any
   firebase_messaging: any
   geolocator: any
+  url_launcher: ^6.1.11
 
 dev_dependencies:
   flutter_test:
