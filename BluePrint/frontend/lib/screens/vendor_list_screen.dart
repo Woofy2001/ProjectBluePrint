@@ -2,93 +2,165 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'vendor_details_screen.dart';
 
-class VendorListScreen extends StatelessWidget {
+class VendorListScreen extends StatefulWidget {
   const VendorListScreen({Key? key}) : super(key: key);
+
+  @override
+  _VendorListScreenState createState() => _VendorListScreenState();
+}
+
+class _VendorListScreenState extends State<VendorListScreen> {
+  String searchQuery = "";
+  bool showFavorites = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Nearby Vendors"),
-        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "BluePrint",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.blue, size: 28),
+            onPressed: () {
+              // TODO: Navigate to Become Vendor Screen
+            },
+          ),
+        ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('vendors').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          var vendors = snapshot.data!.docs;
-
-          if (vendors.isEmpty) {
-            return const Center(
-              child: Text(
-                "No vendors found.",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: vendors.length,
-            itemBuilder: (context, index) {
-              var vendor = vendors[index];
-              final vendorData = vendor.data() as Map<String, dynamic>?;
-
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Search Bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
+              decoration: InputDecoration(
+                hintText: "Search...",
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                filled: true,
+                fillColor: Colors.grey.shade200,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
                 ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: vendorData != null &&
-                            vendorData.containsKey('imageUrl')
-                        ? NetworkImage(vendorData['imageUrl'])
-                        : const NetworkImage("https://via.placeholder.com/150"),
+              ),
+            ),
+          ),
+
+          // Short Description
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Connect with trusted architects, skilled contractors, and premium material suppliers to bring your dream home to life with ease and excellence.",
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Tabs for All & Favorites
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => setState(() => showFavorites = false),
+                child: Text(
+                  "All",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight:
+                        showFavorites ? FontWeight.normal : FontWeight.bold,
+                    color: showFavorites ? Colors.grey : Colors.black,
                   ),
-                  title: Text(
-                    vendorData?['name'] ?? "Unknown Vendor",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              TextButton(
+                onPressed: () => setState(() => showFavorites = true),
+                child: Text(
+                  "Favorites",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight:
+                        showFavorites ? FontWeight.bold : FontWeight.normal,
+                    color: showFavorites ? Colors.black : Colors.grey,
                   ),
-                  subtitle:
-                      Text(vendorData?['specialization'] ?? "Not specified"),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    // ✅ Handle missing fields safely
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VendorDetailsScreen(
-                          name: vendorData?['name'] ?? "Unknown Vendor",
-                          specialization:
-                              vendorData?['specialization'] ?? "Not specified",
-                          phone: vendorData?['phone'] ?? "No phone available",
-                          whatsapp: vendorData?['whatsapp'] ??
-                              "No WhatsApp available",
-                          description: vendorData != null &&
-                                  vendorData.containsKey('description')
-                              ? vendorData['description']
-                              : "No description available.",
-                          services: vendorData != null &&
-                                  vendorData.containsKey('services')
-                              ? List<String>.from(vendorData['services'])
-                              : ["No services listed."],
-                          imageUrl: vendorData != null &&
-                                  vendorData.containsKey('imageUrl')
-                              ? vendorData['imageUrl']
-                              : "https://via.placeholder.com/150",
+                ),
+              ),
+            ],
+          ),
+
+          // Vendor List
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('vendors').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                var vendors = snapshot.data!.docs.where((doc) {
+                  var data = doc.data() as Map<String, dynamic>;
+                  return data['name'].toLowerCase().contains(searchQuery);
+                }).toList();
+
+                return ListView.builder(
+                  itemCount: vendors.length,
+                  itemBuilder: (context, index) {
+                    var vendor = vendors[index].data() as Map<String, dynamic>;
+
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(vendor['imageUrl']),
+                        ),
+                        title: Text(
+                          vendor['name'],
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(vendor['specialization']),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VendorDetailsScreen(
+                                  name: vendor['name'],
+                                  specialization: vendor['specialization'],
+                                  phone: vendor['phone'],
+                                  whatsapp: vendor['whatsapp'],
+                                  description: vendor['description'],
+                                  services:
+                                      List<String>.from(vendor['services']),
+                                  imageUrl: vendor['imageUrl'],
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text("Contact"),
                         ),
                       ),
                     );
                   },
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

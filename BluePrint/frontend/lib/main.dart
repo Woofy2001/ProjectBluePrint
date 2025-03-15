@@ -8,7 +8,6 @@ void main() async {
   await Firebase.initializeApp();
 
   // ✅ Call this function only once to add vendors
-  await addVendors();
 
   runApp(MyApp());
 }
