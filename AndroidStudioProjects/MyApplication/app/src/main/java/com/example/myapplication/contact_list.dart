@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class Constructor {
+class ConstructorModel {
   final String name;
   final String location;
   final String projects;
   final String contact;
 
-  Constructor({
+  const ConstructorModel({
     required this.name,
     required this.location,
     required this.projects,
@@ -15,32 +15,34 @@ class Constructor {
 }
 
 class ConstructorListScreen extends StatelessWidget {
-  final List<Constructor> constructors = [
-    Constructor(
+  ConstructorListScreen({Key? key}) : super(key: key);
+
+  final List<ConstructorModel> constructors = const [
+    ConstructorModel(
       name: "Nimal Perera",
       location: "Colombo 03",
       projects: "High-rise buildings, Bridges",
       contact: "+94 71 234 5678",
     ),
-    Constructor(
+    ConstructorModel(
       name: "Samantha Silva",
       location: "Kandy",
       projects: "Housing complexes, Roads",
       contact: "+94 76 345 6789",
     ),
-    Constructor(
+    ConstructorModel(
       name: "Anura Jayasinghe",
       location: "Galle",
       projects: "Hotels, Resorts",
       contact: "+94 77 456 7890",
     ),
-    Constructor(
+    ConstructorModel(
       name: "Pradeep Wickramasinghe",
       location: "Kurunegala",
       projects: "Commercial buildings, Apartments",
       contact: "+94 75 567 8901",
     ),
-    Constructor(
+    ConstructorModel(
       name: "Kumarasinghe Hettiarachchi",
       location: "Jaffna",
       projects: "Hospitals, Public infrastructure",
@@ -52,10 +54,10 @@ class ConstructorListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Constructors in Sri Lanka"),
+        title: const Text("Constructors in Sri Lanka"),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               // Navigate back to login page
               Navigator.pushReplacementNamed(context, '/');
@@ -68,11 +70,11 @@ class ConstructorListScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final constructor = constructors[index];
           return Card(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: ListTile(
               title: Text(
                 constructor.name,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +84,7 @@ class ConstructorListScreen extends StatelessWidget {
                   Text("Contact: ${constructor.contact}"),
                 ],
               ),
-              leading: Icon(Icons.business, color: Colors.blue),
+              leading: const Icon(Icons.business, color: Colors.blue),
             ),
           );
         },
