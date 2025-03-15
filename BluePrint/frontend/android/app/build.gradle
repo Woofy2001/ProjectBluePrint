@@ -41,4 +41,4 @@ flutter {
 }
 
 // ✅ ADD THIS AT THE BOTTOM (Required for Firebase)
-apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services' // Temporarily disable Firebase

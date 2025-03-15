@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.1'  // Updated Gradle version
-        classpath 'com.google.gms:google-services:4.3.10' // ✅ Firebase services added
+        classpath 'com.google.gms:google-services:4.3.8'  // ✅ Firebase services added
     }
 }
 

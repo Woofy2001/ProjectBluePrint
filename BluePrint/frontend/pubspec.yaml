@@ -11,17 +11,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.0   # HTTP package for API calls
-  provider: ^6.0.5   # State management (optional)
-  cached_network_image: ^3.2.3  # Cache and display floor plan images
-  google_fonts: ^4.0.4  # Custom fonts support
-  firebase_core: any  # Firebase core package
-  cloud_firestore: any  # Firebase Firestore for database
-  firebase_auth: any  # Firebase Authentication (if needed)
-  geolocator: any  # Get user location
-  url_launcher: any  # Open call or WhatsApp
-  permission_handler: any  # Request location permission
-  fluttertoast: any  # Show toast messages
+  http: any
+  provider: any
+  cached_network_image: any
+  google_fonts: any
+  url_launcher: any
+  permission_handler: any
+  firebase_core: any
+  firebase_auth: any
+  cloud_firestore: any
+  firebase_messaging: any
+  geolocator: any
 
 dev_dependencies:
   flutter_test:
