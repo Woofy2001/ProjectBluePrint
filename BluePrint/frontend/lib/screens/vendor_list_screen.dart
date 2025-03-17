@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'vendor_details_screen.dart';
+import 'vendor_form_screen.dart';
 
 class VendorListScreen extends StatefulWidget {
-  const VendorListScreen({Key? key}) : super(key: key);
-
   @override
   _VendorListScreenState createState() => _VendorListScreenState();
 }
@@ -12,6 +11,7 @@ class VendorListScreen extends StatefulWidget {
 class _VendorListScreenState extends State<VendorListScreen> {
   String searchQuery = "";
   bool showFavorites = false;
+  List<DocumentSnapshot> vendors = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,37 +27,37 @@ class _VendorListScreenState extends State<VendorListScreen> {
           IconButton(
             icon: const Icon(Icons.add, color: Colors.blue, size: 28),
             onPressed: () {
-              // TODO: Navigate to Become Vendor Screen
+              // ✅ Redirect to vendor registration form
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => VendorFormScreen()),
+              );
             },
           ),
         ],
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Search Bar
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.all(10.0),
             child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value.toLowerCase();
-                });
-              },
               decoration: InputDecoration(
-                hintText: "Search...",
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                hintText: "Search...",
                 filled: true,
-                fillColor: Colors.grey.shade200,
+                fillColor: Colors.grey[200],
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
               ),
+              onChanged: (query) {
+                setState(() {
+                  searchQuery = query.toLowerCase();
+                });
+              },
             ),
           ),
-
-          // Short Description
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -65,100 +65,133 @@ class _VendorListScreenState extends State<VendorListScreen> {
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ),
-
           const SizedBox(height: 10),
-
-          // Tabs for All & Favorites
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                onPressed: () => setState(() => showFavorites = false),
-                child: Text(
-                  "All",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight:
-                        showFavorites ? FontWeight.normal : FontWeight.bold,
-                    color: showFavorites ? Colors.grey : Colors.black,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => setState(() => showFavorites = true),
-                child: Text(
-                  "Favorites",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight:
-                        showFavorites ? FontWeight.bold : FontWeight.normal,
-                    color: showFavorites ? Colors.black : Colors.grey,
-                  ),
-                ),
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Row(
+              children: [
+                _buildTab("All", !showFavorites),
+                _buildTab("Favorites", showFavorites),
+              ],
+            ),
           ),
-
-          // Vendor List
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream:
                   FirebaseFirestore.instance.collection('vendors').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (!snapshot.hasData)
                   return const Center(child: CircularProgressIndicator());
-                }
 
-                var vendors = snapshot.data!.docs.where((doc) {
+                vendors = snapshot.data!.docs.where((doc) {
                   var data = doc.data() as Map<String, dynamic>;
-                  return data['name'].toLowerCase().contains(searchQuery);
+                  return data['name']
+                      .toString()
+                      .toLowerCase()
+                      .contains(searchQuery);
                 }).toList();
 
                 return ListView.builder(
                   itemCount: vendors.length,
                   itemBuilder: (context, index) {
-                    var vendor = vendors[index].data() as Map<String, dynamic>;
-
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(vendor['imageUrl']),
-                        ),
-                        title: Text(
-                          vendor['name'],
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(vendor['specialization']),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VendorDetailsScreen(
-                                  name: vendor['name'],
-                                  specialization: vendor['specialization'],
-                                  phone: vendor['phone'],
-                                  whatsapp: vendor['whatsapp'],
-                                  description: vendor['description'],
-                                  services:
-                                      List<String>.from(vendor['services']),
-                                  imageUrl: vendor['imageUrl'],
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text("Contact"),
-                        ),
-                      ),
-                    );
+                    var vendor = vendors[index];
+                    return _buildVendorCard(vendor);
                   },
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTab(String title, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          showFavorites = (title == "Favorites");
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? Colors.black : Colors.grey,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVendorCard(DocumentSnapshot vendor) {
+    var data = vendor.data() as Map<String, dynamic>;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50, // ✅ Light blue background
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          // Square Image
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              data['imageUrl'] ?? "https://via.placeholder.com/100",
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          // Vendor Details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['name'],
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Text(
+                  data['specialization'],
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          // Contact Button
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VendorDetailsScreen(
+                    name: data['name'],
+                    specialization: data['specialization'],
+                    phone: data['phone'],
+                    whatsapp: data['whatsapp'],
+                    description: data['description'],
+                    services: List<String>.from(data['services']),
+                    imageUrl: data['imageUrl'],
+                  ),
+                ),
+              );
+            },
+            child: const Text("Contact"),
           ),
         ],
       ),

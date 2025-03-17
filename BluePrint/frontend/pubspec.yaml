@@ -22,6 +22,8 @@ dependencies:
   firebase_messaging: any
   geolocator: any
   url_launcher: ^6.1.11
+  firebase_storage: ^12.4.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
