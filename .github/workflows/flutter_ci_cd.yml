@@ -36,19 +36,19 @@ jobs:
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          pip install pytest  # ✅ Ensures pytest is installed
+          pip install pytest  # ✅ Ensures pytest is installed in GitHub Actions
 
       - name: 🔍 Run Backend Tests
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          pytest --maxfail=5 --disable-warnings  # ✅ Run tests, adjust as needed
+          pytest tests/  # ✅ Runs tests in the correct directory
 
       - name: 🚀 Start FastAPI Backend
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          uvicorn main:app --host 0.0.0.0 --port 8000 &  # ✅ Starts in the background
+          uvicorn main:app --host 0.0.0.0 --port 8000 &  # ✅ Starts FastAPI in the background
 
   frontend:
     name: 🛠️ Frontend - Flutter
