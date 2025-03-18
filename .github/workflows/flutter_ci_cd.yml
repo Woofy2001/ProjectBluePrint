@@ -31,7 +31,13 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-          
+
+      - name: 🧪 Install Test Dependencies
+        run: |
+          cd BluePrint/bp_backend_floor_plan_generator
+          source venv/bin/activate
+          pip install pytest  # ✅ Ensures pytest is installed
+
       - name: 🔍 Run Backend Tests
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
@@ -73,4 +79,3 @@ jobs:
       - name: 📦 Build App Bundle (AAB)
         run: flutter build appbundle
         working-directory: BluePrint/bp_frontend
-
