@@ -1,0 +1,37 @@
+name: Flutter CI/CD Pipeline 🚀
+
+on:
+  push:
+    branches:
+      - main
+      - induwar_floorplan_generator  # ✅ Runs on every push to this branch
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    name: 🛠️ Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.7.0  # ✅ Set your Flutter version
+
+      - name: 📦 Install Dependencies
+        run: flutter pub get
+
+      - name: 🔍 Run Tests
+        run: flutter test
+
+      - name: 📦 Build APK
+        run: flutter build apk --release
+
+      - name: 📦 Build App Bundle (AAB)
+        run: flutter build appbundle
