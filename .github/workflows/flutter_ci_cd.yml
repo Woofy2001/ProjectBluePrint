@@ -27,10 +27,11 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
+          if [ ! -f requirements.txt ]; then echo "❌ requirements.txt NOT FOUND!"; exit 1; fi
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
-
+          
       - name: 🔍 Run Backend Tests
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
