@@ -22,7 +22,7 @@ jobs:
       - name: 🛠️ Set Up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'  # ✅ Adjust based on your FastAPI version
+          python-version: '3.11'
 
       - name: 📦 Install Dependencies
         run: |
@@ -36,19 +36,19 @@ jobs:
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          pip install pytest  # ✅ Ensures pytest is installed
+          pip install pytest
 
       - name: 🔍 Run Backend Tests
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          pytest tests/  # ✅ Runs tests in the correct directory
+          pytest tests/
 
       - name: 🚀 Start FastAPI Backend
         run: |
           cd BluePrint/bp_backend_floor_plan_generator
           source venv/bin/activate
-          uvicorn main:app --host 0.0.0.0 --port 8000 &  # ✅ Starts FastAPI in the background
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
 
   frontend:
     name: 🛠️ Frontend - Flutter
@@ -62,12 +62,12 @@ jobs:
       - name: 🛠️ Setup Flutter (Correct Dart Version)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.19.3  # ✅ Upgrade to a version compatible with Dart 3.7.0+
+          flutter-version: 3.29.2  # ✅ Set to a version that includes Dart 3.7+
           channel: stable
 
       - name: 📦 Install Dependencies
         run: flutter pub get
-        working-directory: BluePrint/bp_frontend  # ✅ Ensures correct project root
+        working-directory: BluePrint/bp_frontend
 
       - name: 🔍 Run Flutter Tests
         run: flutter test
