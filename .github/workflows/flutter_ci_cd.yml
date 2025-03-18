@@ -1,4 +1,4 @@
-name: Flutter CI/CD Pipeline 🚀
+name: Blueprint App CI/CD Pipeline 🚀
 
 on:
   push:
@@ -11,9 +11,42 @@ on:
       - main
 
 jobs:
-  build_and_test:
-    name: 🛠️ Build & Test
+  backend:
+    name: 🛠️ Backend - FastAPI
     runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # ✅ Adjust based on your FastAPI version
+
+      - name: 📦 Install Dependencies
+        run: |
+          cd BluePrint/bp_backend_floor_plan_generator
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: 🔍 Run Backend Tests
+        run: |
+          cd BluePrint/bp_backend_floor_plan_generator
+          source venv/bin/activate
+          pytest --maxfail=5 --disable-warnings  # ✅ Run tests, adjust as needed
+
+      - name: 🚀 Start FastAPI Backend
+        run: |
+          cd BluePrint/bp_backend_floor_plan_generator
+          source venv/bin/activate
+          uvicorn main:app --host 0.0.0.0 --port 8000 &  # ✅ Starts in the background
+
+  frontend:
+    name: 🛠️ Frontend - Flutter
+    runs-on: ubuntu-latest
+    needs: backend  # ✅ Ensures backend runs before frontend starts
 
     steps:
       - name: 📥 Checkout Code
@@ -22,16 +55,21 @@ jobs:
       - name: 🛠️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.7.0  # ✅ Set your Flutter version
+          flutter-version: 3.7.0  # ✅ Use your project's Flutter version
 
       - name: 📦 Install Dependencies
         run: flutter pub get
+        working-directory: BluePrint/bp_frontend  # ✅ Ensures correct project root
 
-      - name: 🔍 Run Tests
+      - name: 🔍 Run Flutter Tests
         run: flutter test
+        working-directory: BluePrint/bp_frontend
 
       - name: 📦 Build APK
         run: flutter build apk --release
+        working-directory: BluePrint/bp_frontend
 
       - name: 📦 Build App Bundle (AAB)
         run: flutter build appbundle
+        working-directory: BluePrint/bp_frontend
+
