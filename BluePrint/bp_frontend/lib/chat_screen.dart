@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'services/api_service.dart';
 
 class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   String? _imageUrl;
   String? _errorMessage;
   bool _isLoading = false;
@@ -41,16 +43,21 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: Center(
-              child: _isLoading
-                  ? CircularProgressIndicator() // ✅ Show a loading spinner
-                  : _errorMessage != null
-                      ? Text(_errorMessage!,
-                          style: TextStyle(color: Colors.red, fontSize: 16))
+              child:
+                  _isLoading
+                      ? CircularProgressIndicator() // ✅ Show a loading spinner
+                      : _errorMessage != null
+                      ? Text(
+                        _errorMessage!,
+                        style: TextStyle(color: Colors.red, fontSize: 16),
+                      )
                       : _imageUrl != null
-                          ? Image.network(
-                              _imageUrl!) // ✅ UI refreshes with the new image
-                          : Text(
-                              "Enter a house description to generate a floor plan."),
+                      ? Image.network(
+                        _imageUrl!,
+                      ) // ✅ UI refreshes with the new image
+                      : Text(
+                        "Enter a house description to generate a floor plan.",
+                      ),
             ),
           ),
           Padding(
@@ -66,10 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: _sendPrompt,
-                ),
+                IconButton(icon: Icon(Icons.send), onPressed: _sendPrompt),
               ],
             ),
           ),

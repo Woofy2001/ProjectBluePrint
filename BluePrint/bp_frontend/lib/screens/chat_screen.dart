@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../utils/api_service.dart'; // ✅ Ensure correct import
+import 'package:provider/provider.dart';
+import '../providers/project_provider.dart';
+import '../models/project_model.dart';
 
 class ChatScreen extends StatefulWidget {
   final String projectId;
-  final String? initialMessage;
 
-  const ChatScreen({super.key, required this.projectId, this.initialMessage});
+  const ChatScreen({super.key, required this.projectId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -13,89 +14,111 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final List<Map<String, dynamic>> messages = [];
-  bool _isProcessing = false;
-  String? _imageUrl;
   final ScrollController _scrollController = ScrollController();
-
-  final Color userBubbleColor = const Color(0xFF3A72D8);
+  bool _isProcessing = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.initialMessage != null && widget.initialMessage!.isNotEmpty) {
-      _addMessage("user", widget.initialMessage!);
-      _sendMessage(widget.initialMessage!);
-    }
-  }
-
-  void _addMessage(String sender, String text, {String? imageUrl}) {
-    setState(() {
-      messages.add({"sender": sender, "text": text, "image": imageUrl});
-    });
-
-    Future.delayed(Duration(milliseconds: 300), () {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<ProjectProvider>(
+        context,
+        listen: false,
+      ).loadProjectChat(widget.projectId);
+      _scrollToBottom();
     });
   }
 
-  Future<void> _sendMessage(String? userInput) async {
-    if (userInput == null || userInput.trim().isEmpty) return;
+  Future<void> _sendMessage(String userInput) async {
+    if (userInput.trim().isEmpty) return;
 
-    _addMessage("user", userInput);
-    _controller.clear();
+    final projectProvider = Provider.of<ProjectProvider>(
+      context,
+      listen: false,
+    );
+
     setState(() => _isProcessing = true);
 
+    // ✅ Add user message first
+    await projectProvider.addMessage(
+      projectId: widget.projectId,
+      text: userInput,
+      sender: "user",
+    );
+
+    _controller.clear();
+    _scrollToBottom();
+
     try {
-      String imageUrl = await ApiService.generateFloorPlan(
+      // ✅ Pass projectId along with userInput (Fix Argument Issue)
+      String imageUrl = await projectProvider.generateFloorPlan(
+        widget.projectId, // 🔥 Ensure projectId is passed
         userInput,
-      ); // ✅ Fetch floor plan
+      );
 
-      setState(() {
-        _imageUrl = imageUrl;
-        _isProcessing = false;
-      });
+      setState(() => _isProcessing = false);
 
-      _addMessage(
-        "bot",
-        "Here is your generated floor plan.",
+      // ✅ Store bot response and generated image in Firestore
+      await projectProvider.addMessage(
+        projectId: widget.projectId,
+        text: "Here is your generated floor plan.",
+        sender: "bot",
         imageUrl: imageUrl,
       );
+
+      _scrollToBottom();
     } catch (e) {
       setState(() => _isProcessing = false);
-      _addMessage("bot", "❌ Error generating floor plan. Try again.");
+
+      await projectProvider.addMessage(
+        projectId: widget.projectId,
+        text: "❌ Error generating floor plan. Try again.",
+        sender: "bot",
+      );
     }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue.shade100,
-      appBar: AppBar(
-        backgroundColor: Colors.blue.shade500,
-        title: const Text(
-          "BluePrint",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: AppBar(title: const Text("Project Chat")),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(16.0),
-              itemCount: messages.length + (_isProcessing ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == messages.length) return _processingMessage();
-                var message = messages[index];
-                return _chatBubble(
-                  message["sender"]!,
-                  message["text"]!,
-                  imageUrl: message["image"],
+            child: Consumer<ProjectProvider>(
+              builder: (context, projectProvider, _) {
+                final project = projectProvider.projects.firstWhere(
+                  (p) => p.id == widget.projectId,
+                  orElse: () => ProjectModel.empty(),
+                );
+
+                if (project.messages.isEmpty) {
+                  return const Center(child: Text("No messages found."));
+                }
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: project.messages.length,
+                  itemBuilder: (context, index) {
+                    var message = project.messages[index];
+                    return _chatBubble(
+                      sender: message["sender"] ?? "Unknown",
+                      text: message["text"] ?? "",
+                      imageUrl: message["image"] ?? "",
+                    );
+                  },
                 );
               },
             ),
@@ -106,7 +129,11 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _chatBubble(String sender, String text, {String? imageUrl}) {
+  Widget _chatBubble({
+    required String sender,
+    required String text,
+    String? imageUrl,
+  }) {
     bool isUser = sender == "user";
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -118,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> {
             margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isUser ? userBubbleColor : Colors.white,
+              color: isUser ? Colors.blue.shade700 : Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -129,13 +156,25 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
           ),
-          if (imageUrl != null)
+          if (imageUrl != null && imageUrl.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                key: ValueKey(imageUrl),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12), // 🔥 Rounded corners
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.broken_image, color: Colors.red),
+                    );
+                  },
+                ),
               ),
             ),
         ],
@@ -143,40 +182,22 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _processingMessage() {
-    return const Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Text("⏳ Processing...", style: TextStyle(color: Colors.grey)),
-      ),
-    );
-  }
-
   Widget _chatInputField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: _controller,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Describe your floor plan...",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
-                  borderSide: BorderSide.none,
-                ),
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          FloatingActionButton(
-            backgroundColor: Colors.blue.shade900,
+          IconButton(
+            icon: const Icon(Icons.send),
             onPressed: () => _sendMessage(_controller.text),
-            child: const Icon(Icons.send, color: Colors.white),
           ),
         ],
       ),

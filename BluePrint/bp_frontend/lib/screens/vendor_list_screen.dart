@@ -4,6 +4,8 @@ import 'vendor_details_screen.dart';
 import 'vendor_form_screen.dart';
 
 class VendorListScreen extends StatefulWidget {
+  const VendorListScreen({super.key});
+
   @override
   _VendorListScreenState createState() => _VendorListScreenState();
 }
@@ -80,16 +82,17 @@ class _VendorListScreenState extends State<VendorListScreen> {
               stream:
                   FirebaseFirestore.instance.collection('vendors').snapshots(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData)
+                if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
+                }
 
-                vendors = snapshot.data!.docs.where((doc) {
-                  var data = doc.data() as Map<String, dynamic>;
-                  return data['name']
-                      .toString()
-                      .toLowerCase()
-                      .contains(searchQuery);
-                }).toList();
+                vendors =
+                    snapshot.data!.docs.where((doc) {
+                      var data = doc.data() as Map<String, dynamic>;
+                      return data['name'].toString().toLowerCase().contains(
+                        searchQuery,
+                      );
+                    }).toList();
 
                 return ListView.builder(
                   itemCount: vendors.length,
@@ -158,7 +161,9 @@ class _VendorListScreenState extends State<VendorListScreen> {
                 Text(
                   data['name'],
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
                 Text(
                   data['specialization'],
@@ -173,21 +178,23 @@ class _VendorListScreenState extends State<VendorListScreen> {
               backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => VendorDetailsScreen(
-                    name: data['name'],
-                    specialization: data['specialization'],
-                    phone: data['phone'],
-                    whatsapp: data['whatsapp'],
-                    description: data['description'],
-                    services: List<String>.from(data['services']),
-                    imageUrl: data['imageUrl'],
-                  ),
+                  builder:
+                      (context) => VendorDetailsScreen(
+                        name: data['name'],
+                        specialization: data['specialization'],
+                        phone: data['phone'],
+                        whatsapp: data['whatsapp'],
+                        description: data['description'],
+                        services: List<String>.from(data['services']),
+                        imageUrl: data['imageUrl'],
+                      ),
                 ),
               );
             },

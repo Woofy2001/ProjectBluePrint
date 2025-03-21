@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SuccessScreen extends StatelessWidget {
   final Map<String, dynamic> vendorData; // ✅ Accept vendorData
 
-  SuccessScreen({required this.vendorData}); // ✅ Constructor
+  const SuccessScreen({super.key, required this.vendorData}); // ✅ Constructor
 
   @override
   Widget build(BuildContext context) {

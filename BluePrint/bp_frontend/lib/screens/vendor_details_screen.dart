@@ -11,7 +11,7 @@ class VendorDetailsScreen extends StatelessWidget {
   final String imageUrl;
 
   const VendorDetailsScreen({
-    Key? key,
+    super.key,
     required this.name,
     required this.specialization,
     required this.phone,
@@ -19,7 +19,7 @@ class VendorDetailsScreen extends StatelessWidget {
     required this.description,
     required this.services,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   void _contactVendor() async {
     final Uri phoneUri = Uri.parse('tel:$phone');
@@ -141,20 +141,28 @@ class VendorDetailsScreen extends StatelessWidget {
               const SizedBox(height: 5),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: services
-                    .map((service) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.check,
-                                  color: Colors.blue, size: 16),
-                              const SizedBox(width: 8),
-                              Text(service,
-                                  style: const TextStyle(fontSize: 14)),
-                            ],
+                children:
+                    services
+                        .map(
+                          (service) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.check,
+                                  color: Colors.blue,
+                                  size: 16,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  service,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
                           ),
-                        ))
-                    .toList(),
+                        )
+                        .toList(),
               ),
 
               const SizedBox(height: 30),

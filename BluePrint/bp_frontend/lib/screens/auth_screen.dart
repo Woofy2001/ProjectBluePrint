@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
 import 'setup_screen1.dart'; // ✅ First setup screen
-import 'landing_screen.dart'; // ✅ Ensure navigation to home screen
+// ✅ Ensure navigation to home screen
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});

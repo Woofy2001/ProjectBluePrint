@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class FloorPlanScreen extends StatelessWidget {
   final String imageUrl;
 
-  FloorPlanScreen({required this.imageUrl});
+  const FloorPlanScreen({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,7 @@ class FloorPlanScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Center(
-        child: Image.network(imageUrl),
-      ),
+      body: Center(child: Image.network(imageUrl)),
     );
   }
 }

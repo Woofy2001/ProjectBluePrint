@@ -6,7 +6,11 @@ class VerificationScreen extends StatefulWidget {
   final Map<String, dynamic> vendorData;
   final User user;
 
-  VerificationScreen({required this.vendorData, required this.user});
+  const VerificationScreen({
+    super.key,
+    required this.vendorData,
+    required this.user,
+  });
 
   @override
   _VerificationScreenState createState() => _VerificationScreenState();
@@ -41,8 +45,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              SuccessScreen(vendorData: widget.vendorData), // ✅ Pass vendorData
+          builder:
+              (context) => SuccessScreen(
+                vendorData: widget.vendorData,
+              ), // ✅ Pass vendorData
         ),
       );
     } else {
@@ -72,9 +78,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
             isChecking
                 ? CircularProgressIndicator() // 🔄 Show a loading indicator
                 : ElevatedButton(
-                    onPressed: checkEmailVerification,
-                    child: Text("I've Verified My Email"),
-                  ),
+                  onPressed: checkEmailVerification,
+                  child: Text("I've Verified My Email"),
+                ),
             if (!isVerified)
               Padding(
                 padding: const EdgeInsets.all(8.0),
