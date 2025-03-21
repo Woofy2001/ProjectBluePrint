@@ -90,14 +90,7 @@ class ProjectProvider extends ChangeNotifier {
 
         print("✅ [generateFloorPlan] Image URL received: $imageUrl");
 
-        // ✅ Save the generated floor plan message in Firestore
-        await addMessage(
-          projectId: projectId,
-          text: "Here is your generated floor plan.",
-          sender: "bot",
-          imageUrl: imageUrl,
-        );
-
+        // ❌ Removed duplicate message saving here
         return imageUrl;
       } else {
         throw Exception("❌ Backend returned an error: ${response.body}");
