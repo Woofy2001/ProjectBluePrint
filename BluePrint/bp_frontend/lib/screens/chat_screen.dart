@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/project_provider.dart';
 import '../models/project_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   final String projectId;
@@ -44,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() => _isProcessing = true);
 
-    // ✅ Add user message first
+    // Add user message first
     await projectProvider.addMessage(
       projectId: widget.projectId,
       text: userInput,
@@ -55,15 +57,15 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
 
     try {
-      // ✅ Pass projectId along with userInput (Fix Argument Issue)
+      // Pass projectId along with userInput
       String imageUrl = await projectProvider.generateFloorPlan(
-        widget.projectId, // 🔥 Ensure projectId is passed
+        widget.projectId, // Ensure projectId is passed
         userInput,
       );
 
       setState(() => _isProcessing = false);
 
-      // ✅ Store bot response and generated image in Firestore
+      // Store bot response and generated image in Firestore
       _scrollToBottom();
     } catch (e) {
       setState(() => _isProcessing = false);
@@ -155,25 +157,54 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           if (imageUrl != null && imageUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12), // 🔥 Rounded corners
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.broken_image, color: Colors.red),
-                    );
-                  },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(Icons.broken_image, color: Colors.red),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
+                TextButton.icon(
+                  onPressed: () async {
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user != null) {
+                      final userName =
+                          user.displayName ?? user.email ?? "Anonymous";
+                      await Provider.of<ProjectProvider>(
+                        context,
+                        listen: false,
+                      ).shareToGallery(
+                        userName: userName,
+                        prompt: text,
+                        imageUrl: imageUrl,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("✅ Shared to Community Gallery"),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.public),
+                  label: const Text("Share to Gallery"),
+                ),
+              ],
             ),
         ],
       ),

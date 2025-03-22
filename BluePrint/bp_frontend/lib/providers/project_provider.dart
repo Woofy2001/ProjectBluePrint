@@ -300,4 +300,26 @@ class ProjectProvider extends ChangeNotifier {
       print("❌ [renameProject] Error: \$e");
     }
   }
+
+  /// ✅ Share to Community Gallery
+  Future<void> shareToGallery({
+    required String userName,
+    required String prompt,
+    required String imageUrl,
+  }) async {
+    String? userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    try {
+      await _firestore.collection("community_gallery").add({
+        "userName": userName,
+        "prompt": prompt,
+        "imageUrl": imageUrl,
+        "timestamp": FieldValue.serverTimestamp(),
+      });
+      print("✅ [shareToGallery] Shared to community gallery");
+    } catch (e) {
+      print("❌ [shareToGallery] Error: $e");
+    }
+  }
 }

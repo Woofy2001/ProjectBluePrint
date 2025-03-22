@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/project_provider.dart';
 import '../screens/user_settings.dart';
 import '../screens/vendor_list_screen.dart';
+import '../screens/community_gallery_screen.dart';
 import '../services/auth_service.dart';
 import '../screens/chat_screen.dart'; // ✅ Make sure this import is added
 
@@ -54,6 +55,16 @@ class DrawerMenu extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => VendorListScreen()),
                 );
               }),
+
+              _drawerItem(Icons.public, "Community Gallery", Colors.blue, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CommunityGalleryScreen(),
+                  ),
+                );
+              }),
+
               const Divider(),
 
               Expanded(

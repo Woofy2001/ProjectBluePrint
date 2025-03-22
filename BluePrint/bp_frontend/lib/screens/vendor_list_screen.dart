@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'vendor_details_screen.dart';
 import 'vendor_form_screen.dart';
+import '../widgets/drawer_menu.dart';
 
 class VendorListScreen extends StatefulWidget {
   const VendorListScreen({super.key});
@@ -18,18 +19,23 @@ class _VendorListScreenState extends State<VendorListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const DrawerMenu(),
       appBar: AppBar(
         title: const Text(
           "BluePrint",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Colors.blue, size: 28),
             onPressed: () {
-              // ✅ Redirect to vendor registration form
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => VendorFormScreen()),
@@ -137,12 +143,11 @@ class _VendorListScreenState extends State<VendorListScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50, // ✅ Light blue background
+        color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          // Square Image
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
@@ -153,7 +158,6 @@ class _VendorListScreenState extends State<VendorListScreen> {
             ),
           ),
           const SizedBox(width: 12),
-          // Vendor Details
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +176,6 @@ class _VendorListScreenState extends State<VendorListScreen> {
               ],
             ),
           ),
-          // Contact Button
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
