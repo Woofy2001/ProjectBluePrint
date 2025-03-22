@@ -5,8 +5,13 @@ import '../models/project_model.dart';
 
 class ChatScreen extends StatefulWidget {
   final String projectId;
+  final String projectName;
 
-  const ChatScreen({super.key, required this.projectId});
+  const ChatScreen({
+    super.key,
+    required this.projectId,
+    required this.projectName,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -86,7 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Project Chat")),
+      appBar: AppBar(title: Text(widget.projectName)),
       body: Column(
         children: [
           Expanded(

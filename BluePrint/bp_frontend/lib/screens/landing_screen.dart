@@ -65,7 +65,11 @@ class _LandingScreenState extends State<LandingScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ChatScreen(projectId: existingProject.id),
+          builder:
+              (context) => ChatScreen(
+                projectId: existingProject.id,
+                projectName: existingProject.name,
+              ),
         ),
       );
     } else {
@@ -83,7 +87,19 @@ class _LandingScreenState extends State<LandingScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChatScreen(projectId: projectId),
+                builder: (context) {
+                  final projectProvider = Provider.of<ProjectProvider>(
+                    context,
+                    listen: false,
+                  );
+                  final selectedProject = projectProvider.projects.firstWhere(
+                    (p) => p.id == projectId,
+                  );
+                  return ChatScreen(
+                    projectId: selectedProject.id,
+                    projectName: selectedProject.name,
+                  );
+                },
               ),
             );
           },

@@ -65,11 +65,38 @@ class DrawerMenu extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final project = projectProvider.projects[index];
                             return ListTile(
-                              title: Text(
-                                project.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      project.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      if (value == 'rename') {
+                                        _showRenameDialog(
+                                          context,
+                                          project.id,
+                                          project.name,
+                                        );
+                                      }
+                                    },
+                                    itemBuilder:
+                                        (context) => [
+                                          const PopupMenuItem(
+                                            value: 'rename',
+                                            child: Text("Rename"),
+                                          ),
+                                        ],
+                                  ),
+                                ],
                               ),
                               trailing: IconButton(
                                 icon: const Icon(
@@ -84,13 +111,15 @@ class DrawerMenu extends StatelessWidget {
                                 Navigator.pop(context); // Close drawer
                                 await projectProvider.loadProjectChat(
                                   project.id,
-                                ); // ✅ Load chat
+                                );
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) =>
-                                            ChatScreen(projectId: project.id),
+                                        (context) => ChatScreen(
+                                          projectId: project.id,
+                                          projectName: project.name,
+                                        ),
                                   ),
                                 );
                               },
@@ -136,6 +165,47 @@ class DrawerMenu extends StatelessWidget {
       leading: Icon(icon, color: color),
       title: Text(title),
       onTap: onTap,
+    );
+  }
+
+  void _showRenameDialog(
+    BuildContext context,
+    String projectId,
+    String currentName,
+  ) {
+    final TextEditingController _controller = TextEditingController(
+      text: currentName,
+    );
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Rename Project"),
+            content: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(labelText: "New project name"),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final newName = _controller.text.trim();
+                  if (newName.isNotEmpty) {
+                    await Provider.of<ProjectProvider>(
+                      context,
+                      listen: false,
+                    ).renameProject(projectId, newName);
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text("Rename"),
+              ),
+            ],
+          ),
     );
   }
 }

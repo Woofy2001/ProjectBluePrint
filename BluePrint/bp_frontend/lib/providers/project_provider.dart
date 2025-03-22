@@ -72,7 +72,8 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  /// ✅ **Generate a Floor Plan (with Firebase Upload)**
+  /// ✅ **Generate a Floor Plan (Fixed API Call)**
+
   Future<String> generateFloorPlan(String projectId, String prompt) async {
     try {
       print("🔄 [generateFloorPlan] Sending request to backend for: $prompt");
@@ -85,23 +86,21 @@ class ProjectProvider extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        String backendImageUrl = "http://10.0.2.2:8000" + data["image_url"];
-        print("✅ [generateFloorPlan] Backend image URL: $backendImageUrl");
+        String localUrl = "http://10.0.2.2:8000" + data["image_url"];
+        print("✅ [generateFloorPlan] Image URL received: $localUrl");
 
-        // 📥 Download image to temp file
+        // Download the image to a temp file
         final tempDir = Directory.systemTemp;
-        final tempFile = File(
-          '${tempDir.path}/floor_plan_${DateTime.now().millisecondsSinceEpoch}.png',
-        );
-        final imageResponse = await http.get(Uri.parse(backendImageUrl));
-        await tempFile.writeAsBytes(imageResponse.bodyBytes);
-        print("📦 [generateFloorPlan] Image saved to temp: ${tempFile.path}");
+        final filePath =
+            "${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png";
+        final imageFile = File(filePath);
+        final imageBytes = await http.readBytes(Uri.parse(localUrl));
+        await imageFile.writeAsBytes(imageBytes);
 
-        // ☁️ Upload to Firebase
-        final firebaseUrl = await uploadImageToFirebase(projectId, tempFile);
-        print("☁️ [generateFloorPlan] Uploaded to Firebase: $firebaseUrl");
+        // Upload to Firebase
+        String firebaseUrl = await uploadImageToFirebase(projectId, imageFile);
 
-        // 💬 Save image URL in Firestore
+        // Save bot message with Firebase image URL
         await addMessage(
           projectId: projectId,
           text: "Here is your generated floor plan.",
@@ -170,7 +169,9 @@ class ProjectProvider extends ChangeNotifier {
 
     try {
       final snapshot =
-          await projectRef.orderBy("timestamp", descending: false).get();
+          await projectRef
+              .orderBy("timestamp", descending: false) // ✅ Ensure correct order
+              .get();
 
       final project = _projects.firstWhere(
         (p) => p.id == projectId,
@@ -179,14 +180,18 @@ class ProjectProvider extends ChangeNotifier {
 
       if (project.id.isNotEmpty) {
         project.messages =
-            snapshot.docs.map((doc) {
-              return {
-                "text": doc["text"] ?? "",
-                "sender": doc["sender"] ?? "Unknown",
-                "image": doc.data().containsKey("image") ? doc["image"] : "",
-                "timestamp": doc["timestamp"] ?? FieldValue.serverTimestamp(),
-              };
-            }).toList();
+            snapshot.docs
+                .map(
+                  (doc) => {
+                    "text": doc["text"] ?? "",
+                    "sender": doc["sender"] ?? "Unknown",
+                    "image":
+                        doc.data().containsKey("image") ? doc["image"] : "",
+                    "timestamp":
+                        doc["timestamp"] ?? FieldValue.serverTimestamp(),
+                  },
+                )
+                .toList();
 
         notifyListeners();
         print(
@@ -272,5 +277,27 @@ class ProjectProvider extends ChangeNotifier {
     }
 
     await addMessage(projectId: projectId, text: promptText, sender: "user");
+  }
+
+  // ... [previous content assumed to be unchanged]
+
+  /// ✅ Rename an existing project
+  Future<void> renameProject(String projectId, String newName) async {
+    String? userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    final projectRef = _firestore
+        .collection("users")
+        .doc(userId)
+        .collection("projects")
+        .doc(projectId);
+
+    try {
+      await projectRef.update({"name": newName});
+      print("✅ [renameProject] Renamed to \$newName");
+      await fetchUserProjects(); // refresh the list
+    } catch (e) {
+      print("❌ [renameProject] Error: \$e");
+    }
   }
 }
