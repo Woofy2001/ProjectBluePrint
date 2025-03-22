@@ -1,6 +1,6 @@
 {
-    "name": "onboarding",
-    "short_name": "onboarding",
+    "name": "professionals",
+    "short_name": "professionals",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
