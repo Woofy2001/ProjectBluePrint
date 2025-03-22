@@ -72,26 +72,44 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  /// ✅ **Generate a Floor Plan (Fixed API Call)**
+  /// ✅ **Generate a Floor Plan (with Firebase Upload)**
   Future<String> generateFloorPlan(String projectId, String prompt) async {
     try {
       print("🔄 [generateFloorPlan] Sending request to backend for: $prompt");
 
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:8000/generate-plan"), // ✅ Backend URL
+        Uri.parse("http://10.0.2.2:8000/generate-plan"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"prompt": prompt}),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        String imageUrl =
-            "http://10.0.2.2:8000" + data["image_url"]; // ✅ Correct URL
+        String backendImageUrl = "http://10.0.2.2:8000" + data["image_url"];
+        print("✅ [generateFloorPlan] Backend image URL: $backendImageUrl");
 
-        print("✅ [generateFloorPlan] Image URL received: $imageUrl");
+        // 📥 Download image to temp file
+        final tempDir = Directory.systemTemp;
+        final tempFile = File(
+          '${tempDir.path}/floor_plan_${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+        final imageResponse = await http.get(Uri.parse(backendImageUrl));
+        await tempFile.writeAsBytes(imageResponse.bodyBytes);
+        print("📦 [generateFloorPlan] Image saved to temp: ${tempFile.path}");
 
-        // ❌ Removed duplicate message saving here
-        return imageUrl;
+        // ☁️ Upload to Firebase
+        final firebaseUrl = await uploadImageToFirebase(projectId, tempFile);
+        print("☁️ [generateFloorPlan] Uploaded to Firebase: $firebaseUrl");
+
+        // 💬 Save image URL in Firestore
+        await addMessage(
+          projectId: projectId,
+          text: "Here is your generated floor plan.",
+          sender: "bot",
+          imageUrl: firebaseUrl,
+        );
+
+        return firebaseUrl;
       } else {
         throw Exception("❌ Backend returned an error: ${response.body}");
       }
@@ -152,9 +170,7 @@ class ProjectProvider extends ChangeNotifier {
 
     try {
       final snapshot =
-          await projectRef
-              .orderBy("timestamp", descending: false) // ✅ Ensure correct order
-              .get();
+          await projectRef.orderBy("timestamp", descending: false).get();
 
       final project = _projects.firstWhere(
         (p) => p.id == projectId,
@@ -163,18 +179,14 @@ class ProjectProvider extends ChangeNotifier {
 
       if (project.id.isNotEmpty) {
         project.messages =
-            snapshot.docs
-                .map(
-                  (doc) => {
-                    "text": doc["text"] ?? "",
-                    "sender": doc["sender"] ?? "Unknown",
-                    "image":
-                        doc.data().containsKey("image") ? doc["image"] : "",
-                    "timestamp":
-                        doc["timestamp"] ?? FieldValue.serverTimestamp(),
-                  },
-                )
-                .toList();
+            snapshot.docs.map((doc) {
+              return {
+                "text": doc["text"] ?? "",
+                "sender": doc["sender"] ?? "Unknown",
+                "image": doc.data().containsKey("image") ? doc["image"] : "",
+                "timestamp": doc["timestamp"] ?? FieldValue.serverTimestamp(),
+              };
+            }).toList();
 
         notifyListeners();
         print(

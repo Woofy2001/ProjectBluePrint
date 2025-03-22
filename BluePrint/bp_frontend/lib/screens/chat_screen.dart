@@ -59,13 +59,6 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() => _isProcessing = false);
 
       // ✅ Store bot response and generated image in Firestore
-      await projectProvider.addMessage(
-        projectId: widget.projectId,
-        text: "Here is your generated floor plan.",
-        sender: "bot",
-        imageUrl: imageUrl,
-      );
-
       _scrollToBottom();
     } catch (e) {
       setState(() => _isProcessing = false);

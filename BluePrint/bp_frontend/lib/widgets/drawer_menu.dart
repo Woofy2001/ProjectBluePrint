@@ -4,6 +4,7 @@ import '../providers/project_provider.dart';
 import '../screens/user_settings.dart';
 import '../screens/vendor_list_screen.dart';
 import '../services/auth_service.dart';
+import '../screens/chat_screen.dart'; // ✅ Make sure this import is added
 
 class DrawerMenu extends StatelessWidget {
   final Function(String projectId)? onProjectSelected;
@@ -21,7 +22,7 @@ class DrawerMenu extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              // ✅ Create New Project
+
               _drawerItem(
                 Icons.add_circle,
                 "New Project",
@@ -33,7 +34,7 @@ class DrawerMenu extends StatelessWidget {
                   await projectProvider.addProjectAndMessage(
                     projectName,
                     "New project created",
-                    null, // No image required initially
+                    null,
                   );
 
                   if (onProjectSelected != null) {
@@ -47,7 +48,6 @@ class DrawerMenu extends StatelessWidget {
                 },
               ),
 
-              // ✅ Navigate to Vendor List
               _drawerItem(Icons.explore, "Contact a Vendor", Colors.blue, () {
                 Navigator.push(
                   context,
@@ -56,7 +56,6 @@ class DrawerMenu extends StatelessWidget {
               }),
               const Divider(),
 
-              // ✅ Fetch & Display User Projects
               Expanded(
                 child:
                     projectProvider.projects.isEmpty
@@ -81,19 +80,27 @@ class DrawerMenu extends StatelessWidget {
                                   // TODO: Implement delete functionality
                                 },
                               ),
-                              onTap: () {
-                                if (onProjectSelected != null) {
-                                  onProjectSelected!(project.id);
-                                }
-                                Navigator.pop(context);
+                              onTap: () async {
+                                Navigator.pop(context); // Close drawer
+                                await projectProvider.loadProjectChat(
+                                  project.id,
+                                ); // ✅ Load chat
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            ChatScreen(projectId: project.id),
+                                  ),
+                                );
                               },
                             );
                           },
                         ),
               ),
+
               const Divider(),
 
-              // ✅ User Profile Section
               ListTile(
                 leading: CircleAvatar(
                   radius: 22,
