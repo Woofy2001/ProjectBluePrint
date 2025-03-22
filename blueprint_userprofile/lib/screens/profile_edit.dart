@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart'; // Import image picker
+import 'dart:io'; // For File class
 import '../models/user_profile_data.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -14,6 +16,8 @@ class _ProfileEditState extends State<ProfileEdit> {
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
+
+  XFile? _profileImage; // For storing the picked image
 
   @override
   void initState() {
@@ -31,14 +35,59 @@ class _ProfileEditState extends State<ProfileEdit> {
     super.dispose();
   }
 
-  void saveAndReturn() {
-    Navigator.pop(
-      context,
-      UserProfileData(
-        name: nameController.text,
-        email: widget.user.email,
-        phone: phoneController.text,
-        address: addressController.text,
+  // Function to pick image
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = pickedFile;
+      });
+    }
+  }
+
+  // Function to show bottom sheet with options
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          height: 200,
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Change Profile Picture'),
+                onTap: () {
+                  _pickImage();
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.remove_red_eye),
+                title: const Text('View Profile Picture'),
+                onTap: () {
+                  // Add functionality to view the current profile picture in full screen
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  InputDecoration _fieldDecoration(String hint, IconData icon) {
+    return InputDecoration(
+      prefixIcon: Icon(icon),
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF2F2F2),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide.none,
       ),
     );
   }
@@ -60,7 +109,16 @@ class _ProfileEditState extends State<ProfileEdit> {
                     child: const Text('Back', style: TextStyle(fontSize: 16)),
                   ),
                   GestureDetector(
-                    onTap: saveAndReturn,
+                    onTap:
+                        () => Navigator.pop(
+                          context,
+                          UserProfileData(
+                            name: nameController.text,
+                            email: widget.user.email,
+                            phone: phoneController.text,
+                            address: addressController.text,
+                          ),
+                        ),
                     child: const Text(
                       'Done',
                       style: TextStyle(
@@ -73,14 +131,26 @@ class _ProfileEditState extends State<ProfileEdit> {
               ),
               const SizedBox(height: 30),
 
-              // Avatar
-              const CircleAvatar(
-                radius: 70,
-                backgroundImage: AssetImage('assets/images/profile.jpg'),
+              // Profile image with edit button
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 70,
+                    backgroundImage:
+                        _profileImage == null
+                            ? AssetImage('assets/images/profile.jpg')
+                                as ImageProvider
+                            : FileImage(File(_profileImage!.path)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, color: Colors.white),
+                    onPressed: _showBottomSheet, // Show popup for options
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
 
-              // Name
               Text(
                 widget.user.name,
                 style: const TextStyle(
@@ -93,12 +163,9 @@ class _ProfileEditState extends State<ProfileEdit> {
               // Editable Fields
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person_outline),
-                  hintText: 'New username',
-                  filled: true,
-                  fillColor: Color(0xFFF0F0F0),
-                  border: InputBorder.none,
+                decoration: _fieldDecoration(
+                  'New username',
+                  Icons.person_outline,
                 ),
               ),
               const SizedBox(height: 10),
@@ -112,24 +179,18 @@ class _ProfileEditState extends State<ProfileEdit> {
 
               TextField(
                 controller: phoneController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.phone_outlined),
-                  hintText: 'New contact number',
-                  filled: true,
-                  fillColor: Color(0xFFF0F0F0),
-                  border: InputBorder.none,
+                decoration: _fieldDecoration(
+                  'New contact number',
+                  Icons.phone_outlined,
                 ),
               ),
               const SizedBox(height: 10),
 
               TextField(
                 controller: addressController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.location_on_outlined),
-                  hintText: 'New address',
-                  filled: true,
-                  fillColor: Color(0xFFF0F0F0),
-                  border: InputBorder.none,
+                decoration: _fieldDecoration(
+                  'New address',
+                  Icons.location_on_outlined,
                 ),
               ),
             ],

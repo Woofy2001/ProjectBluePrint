@@ -30,6 +30,7 @@ class _UserProfileState extends State<UserProfile> {
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top bar
               Row(
@@ -60,26 +61,27 @@ class _UserProfileState extends State<UserProfile> {
               ),
               const SizedBox(height: 30),
 
-              // Avatar
-              const CircleAvatar(
-                radius: 70,
-                backgroundImage: AssetImage('assets/images/profile.jpg'),
+              const Center(
+                child: CircleAvatar(
+                  radius: 70,
+                  backgroundImage: AssetImage('assets/images/profile.jpg'),
+                ),
               ),
               const SizedBox(height: 20),
 
-              // Name
-              Text(
-                user.name,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: Text(
+                  user.name,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-
               const SizedBox(height: 30),
 
-              // Email
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.person_outline),
                 title: Text(
                   user.name,
@@ -88,14 +90,14 @@ class _UserProfileState extends State<UserProfile> {
                 subtitle: Text(user.email),
               ),
 
-              // Phone
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.phone_outlined),
                 title: Text(user.phone),
               ),
 
-              // Address
               ListTile(
+                contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.location_on_outlined),
                 title: Text(user.address),
               ),
