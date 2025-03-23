@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Import image picker
-import 'dart:io'; // For File class
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../models/user_profile_data.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -17,7 +17,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   late TextEditingController phoneController;
   late TextEditingController addressController;
 
-  XFile? _profileImage; // For storing the picked image
+  XFile? _profileImage;
 
   @override
   void initState() {
@@ -35,7 +35,6 @@ class _ProfileEditState extends State<ProfileEdit> {
     super.dispose();
   }
 
-  // Function to pick image
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -46,7 +45,6 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
   }
 
-  // Function to show bottom sheet with options
   void _showBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -68,7 +66,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                 leading: const Icon(Icons.remove_red_eye),
                 title: const Text('View Profile Picture'),
                 onTap: () {
-                  // Add functionality to view the current profile picture in full screen
                   Navigator.pop(context);
                 },
               ),
@@ -96,12 +93,77 @@ class _ProfileEditState extends State<ProfileEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              // Top bar
-              Row(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                20,
+                80,
+                20,
+                20,
+              ), // shifted down
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage:
+                            _profileImage == null
+                                ? AssetImage('assets/images/profile.jpg')
+                                    as ImageProvider
+                                : FileImage(File(_profileImage!.path)),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.white),
+                        onPressed: _showBottomSheet,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    widget.user.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  TextField(
+                    controller: nameController,
+                    decoration: _fieldDecoration(
+                      'New username',
+                      Icons.person_outline,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.user.email,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: phoneController,
+                    decoration: _fieldDecoration(
+                      'New contact number',
+                      Icons.phone_outlined,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: addressController,
+                    decoration: _fieldDecoration(
+                      'New address',
+                      Icons.location_on_outlined,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
@@ -129,72 +191,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
-
-              // Profile image with edit button
-              Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 70,
-                    backgroundImage:
-                        _profileImage == null
-                            ? AssetImage('assets/images/profile.jpg')
-                                as ImageProvider
-                            : FileImage(File(_profileImage!.path)),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.white),
-                    onPressed: _showBottomSheet, // Show popup for options
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              Text(
-                widget.user.name,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // Editable Fields
-              TextField(
-                controller: nameController,
-                decoration: _fieldDecoration(
-                  'New username',
-                  Icons.person_outline,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              Text(
-                widget.user.email,
-                style: const TextStyle(color: Colors.grey),
-              ),
-
-              const SizedBox(height: 10),
-
-              TextField(
-                controller: phoneController,
-                decoration: _fieldDecoration(
-                  'New contact number',
-                  Icons.phone_outlined,
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              TextField(
-                controller: addressController,
-                decoration: _fieldDecoration(
-                  'New address',
-                  Icons.location_on_outlined,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
