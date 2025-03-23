@@ -50,14 +50,17 @@ class CommunityGalleryScreen extends StatelessWidget {
                 final galleryItems =
                     snapshot.data!.docs.map((doc) {
                       var data = doc.data() as Map<String, dynamic>;
+
+                      // Fetching user details (name, image) and prompt
                       return {
                         "image": data['imageUrl'] ?? '',
                         "name": data['userName'] ?? 'Unknown',
-                        "description": data['prompt'] ?? '',
+                        "description":
+                            data['prompt'] ??
+                            'No description provided.', // ✅ FIXED to safely fallback
                         "avatar":
-                            data['userName'] != null
-                                ? "https://i.pravatar.cc/150?img=5" // Placeholder
-                                : "https://i.pravatar.cc/150?img=8",
+                            data['userImage'] ??
+                            "https://i.pravatar.cc/150?img=5", // Default image
                       };
                     }).toList();
 

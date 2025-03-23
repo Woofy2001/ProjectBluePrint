@@ -20,6 +20,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final Map<String, String> _promptMap = {};
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isProcessing = false;
@@ -117,6 +118,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       sender: message["sender"] ?? "Unknown",
                       text: message["text"] ?? "",
                       imageUrl: message["image"] ?? "",
+                      allMessages: project.messages, // ✅ FIXED
+                      index: index, // ✅ FIXED
                     );
                   },
                 );
@@ -132,7 +135,9 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _chatBubble({
     required String sender,
     required String text,
-    String? imageUrl,
+    required String? imageUrl,
+    required List<Map<String, dynamic>> allMessages,
+    required int index,
   }) {
     bool isUser = sender == "user";
     return Align(
@@ -184,16 +189,36 @@ class _ChatScreenState extends State<ChatScreen> {
                   onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser;
                     if (user != null) {
+                      // Get the user data
                       final userName =
                           user.displayName ?? user.email ?? "Anonymous";
+                      final userImage =
+                          user.photoURL ?? "https://default-image-url.com";
+
+                      // 🔍 Find last user prompt BEFORE this bot message
+                      int userIndex = index - 1;
+                      String userPrompt = "Unknown prompt";
+                      while (userIndex >= 0) {
+                        if (allMessages[userIndex]["sender"] == "user") {
+                          userPrompt =
+                              allMessages[userIndex]["text"] ??
+                              "Unknown prompt";
+                          break;
+                        }
+                        userIndex--;
+                      }
+
+                      // 🔥 Share to gallery with actual user prompt
                       await Provider.of<ProjectProvider>(
                         context,
                         listen: false,
                       ).shareToGallery(
                         userName: userName,
-                        prompt: text,
+                        projectId: widget.projectId,
+                        prompt: userPrompt, // ✅ the real prompt
                         imageUrl: imageUrl,
                       );
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("✅ Shared to Community Gallery"),

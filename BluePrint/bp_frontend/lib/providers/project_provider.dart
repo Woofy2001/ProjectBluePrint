@@ -301,23 +301,45 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  /// ✅ Share to Community Gallery
   Future<void> shareToGallery({
-    required String userName,
-    required String prompt,
+    required String projectId,
     required String imageUrl,
+    required String prompt,
+    required String userName,
   }) async {
-    String? userId = _auth.currentUser?.uid;
-    if (userId == null) return;
-
     try {
-      await _firestore.collection("community_gallery").add({
-        "userName": userName,
-        "prompt": prompt,
-        "imageUrl": imageUrl,
-        "timestamp": FieldValue.serverTimestamp(),
-      });
-      print("✅ [shareToGallery] Shared to community gallery");
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Fetch the user data from Firestore
+        final userDoc =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .get();
+
+        // Safely access the first_name and last_name fields
+        String firstName = userDoc.data()?['first_name'] ?? 'Anonymous';
+        String lastName = userDoc.data()?['last_name'] ?? '';
+        String finalUserName =
+            '$firstName $lastName'; // Combine first and last name
+
+        String userImage =
+            user.photoURL ??
+            "https://default-image-url"; // If user doesn't have a profile image, use a default one
+
+        // Share the floor plan to the community gallery
+        await FirebaseFirestore.instance.collection('community_gallery').add({
+          'userName': finalUserName,
+          'imageUrl': imageUrl,
+          'prompt': prompt,
+          'userImage': userImage,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+
+        print("✅ [shareToGallery] Shared to community gallery");
+      } else {
+        print("❌ [shareToGallery] User is not authenticated");
+      }
     } catch (e) {
       print("❌ [shareToGallery] Error: $e");
     }
