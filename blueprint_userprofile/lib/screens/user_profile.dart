@@ -23,6 +23,10 @@ class _UserProfileState extends State<UserProfile> {
     });
   }
 
+  void _logout() {
+    debugPrint('Logout button pressed');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +34,7 @@ class _UserProfileState extends State<UserProfile> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 140, 20, 20), // More DOWN
+              padding: const EdgeInsets.fromLTRB(20, 140, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -70,10 +74,26 @@ class _UserProfileState extends State<UserProfile> {
                     leading: const Icon(Icons.location_on_outlined),
                     title: Text(user.address),
                   ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _logout,
+                      icon: const Icon(Icons.logout),
+                      label: const Text("Logout"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3057E1),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            // Top row
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
