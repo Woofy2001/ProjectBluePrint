@@ -153,7 +153,7 @@ class DrawerMenu extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const UserSettingsScreen(),
+                      builder: (context) => const UserProfile(),
                     ),
                   );
                 },

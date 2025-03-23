@@ -344,4 +344,33 @@ class ProjectProvider extends ChangeNotifier {
       print("❌ [shareToGallery] Error: $e");
     }
   }
+
+  /// ✅ Create new project from shared prompt and return projectId
+  Future<String?> createProjectFromCommunityPrompt(String prompt) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    final newProjectRef =
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .collection("projects")
+            .doc();
+
+    final projectId = newProjectRef.id;
+
+    await newProjectRef.set({
+      "id": projectId,
+      "userId": user.uid,
+      "name": "Community Prompt",
+      "messages": [],
+      "images": [],
+      "timestamp": FieldValue.serverTimestamp(),
+    });
+
+    // await addMessage(projectId: projectId, text: prompt, sender: "user");
+    await fetchUserProjects();
+
+    return projectId;
+  }
 }

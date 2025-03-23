@@ -6,10 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
+  final String? initialPrompt;
   final String projectId;
   final String projectName;
 
   const ChatScreen({
+    this.initialPrompt,
     super.key,
     required this.projectId,
     required this.projectName,
@@ -28,6 +30,11 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.initialPrompt != null && widget.initialPrompt!.isNotEmpty) {
+      _controller.text = widget.initialPrompt!;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Provider.of<ProjectProvider>(
         context,
@@ -54,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       sender: "user",
     );
 
-    _controller.clear();
+    if (_controller.text == userInput) _controller.clear();
     _scrollToBottom();
 
     try {
@@ -118,8 +125,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       sender: message["sender"] ?? "Unknown",
                       text: message["text"] ?? "",
                       imageUrl: message["image"] ?? "",
-                      allMessages: project.messages, // ✅ FIXED
-                      index: index, // ✅ FIXED
+                      allMessages: project.messages, // ✅ fixed
+                      index: index, // ✅ fixed
                     );
                   },
                 );
@@ -193,29 +200,18 @@ class _ChatScreenState extends State<ChatScreen> {
                       final userName =
                           user.displayName ?? user.email ?? "Anonymous";
                       final userImage =
-                          user.photoURL ?? "https://default-image-url.com";
+                          user.photoURL ??
+                          "https://default-image-url.com"; // Default image if user has no photo
 
-                      // 🔍 Find last user prompt BEFORE this bot message
-                      int userIndex = index - 1;
-                      String userPrompt = "Unknown prompt";
-                      while (userIndex >= 0) {
-                        if (allMessages[userIndex]["sender"] == "user") {
-                          userPrompt =
-                              allMessages[userIndex]["text"] ??
-                              "Unknown prompt";
-                          break;
-                        }
-                        userIndex--;
-                      }
-
-                      // 🔥 Share to gallery with actual user prompt
+                      // Pass projectId, prompt, and imageUrl to the shareToGallery method
                       await Provider.of<ProjectProvider>(
                         context,
                         listen: false,
                       ).shareToGallery(
                         userName: userName,
-                        projectId: widget.projectId,
-                        prompt: userPrompt, // ✅ the real prompt
+                        projectId: widget.projectId, // Pass projectId here
+                        prompt:
+                            _promptMap[imageUrl] ?? text, // ✅ real user prompt
                         imageUrl: imageUrl,
                       );
 
