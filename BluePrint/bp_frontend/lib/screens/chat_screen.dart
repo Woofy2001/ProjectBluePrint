@@ -1,3 +1,4 @@
+// All imports remain the same
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/project_provider.dart';
@@ -11,10 +12,10 @@ class ChatScreen extends StatefulWidget {
   final String projectName;
 
   const ChatScreen({
-    this.initialPrompt,
     super.key,
     required this.projectId,
     required this.projectName,
+    this.initialPrompt,
   });
 
   @override
@@ -22,6 +23,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final Map<String, String> _promptMap = {};
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isProcessing = false;
@@ -91,6 +93,18 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }
     });
+  }
+
+  String _getLastUserMessageBeforeIndex(
+    List<Map<String, dynamic>> messages,
+    int index,
+  ) {
+    for (int i = index - 1; i >= 0; i--) {
+      if (messages[i]['sender'] == 'user') {
+        return messages[i]['text'] ?? '';
+      }
+    }
+    return '';
   }
 
   @override
@@ -191,13 +205,20 @@ class _ChatScreenState extends State<ChatScreen> {
                   onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser;
                     if (user != null) {
+                      final userDoc =
+                          await FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(user.uid)
+                              .get();
+
                       final userName =
-                          user.displayName ?? user.email ?? "Anonymous";
-
+                          "${userDoc.data()?['first_name'] ?? ''} ${userDoc.data()?['last_name'] ?? ''}"
+                              .trim();
                       final userImage =
-                          user.photoURL ?? "https://default-image-url.com";
+                          userDoc.data()?['profileImage'] ??
+                          "https://default-image-url.com";
 
-                      final userPrompt = _getLastUserMessageBeforeIndex(
+                      final prompt = _getLastUserMessageBeforeIndex(
                         allMessages,
                         index,
                       );
@@ -208,8 +229,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       ).shareToGallery(
                         userName: userName,
                         projectId: widget.projectId,
-                        prompt: userPrompt,
+                        prompt: prompt,
                         imageUrl: imageUrl,
+                        userImage: userImage,
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -227,19 +249,6 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
-  }
-
-  String _getLastUserMessageBeforeIndex(
-    List<Map<String, dynamic>> messages,
-    int index,
-  ) {
-    for (int i = index - 1; i >= 0; i--) {
-      final msg = messages[i];
-      if (msg['sender'] == 'user' && msg['text'] != null) {
-        return msg['text'];
-      }
-    }
-    return "User prompt not found";
   }
 
   Widget _chatInputField() {
