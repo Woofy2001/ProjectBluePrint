@@ -121,6 +121,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    //Profile edit icon
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -132,12 +133,32 @@ class _ProfileEditState extends State<ProfileEdit> {
                                       as ImageProvider
                                   : FileImage(File(_profileImage!.path)),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.white),
-                          onPressed: _showBottomSheet,
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.7),
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.camera_alt,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                              onPressed: _showBottomSheet,
+                              tooltip: 'Change Profile Picture',
+                              padding: EdgeInsets.zero,
+                              splashRadius: 20,
+                            ),
+                          ),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 20),
                     Text(
                       widget.user.name,
@@ -148,7 +169,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ),
                     const SizedBox(height: 30),
 
-                    // Name Field
+                    // Username
                     TextFormField(
                       controller: nameController,
                       decoration: _fieldDecoration(
@@ -160,14 +181,14 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Email (readonly)
+                    // Email (read-only)
                     Text(
                       widget.user.email,
                       style: const TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 10),
 
-                    // Phone Field
+                    // Phone number
                     TextFormField(
                       controller: phoneController,
                       decoration: _fieldDecoration(
@@ -178,7 +199,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ),
                     const SizedBox(height: 10),
 
-                    // Address Field
+                    // Address
                     TextFormField(
                       controller: addressController,
                       decoration: _fieldDecoration(
@@ -192,7 +213,7 @@ class _ProfileEditState extends State<ProfileEdit> {
               ),
             ),
 
-            // Top bar
+            // Top bar with "Back" and "Done"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
