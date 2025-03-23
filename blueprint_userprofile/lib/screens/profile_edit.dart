@@ -96,12 +96,7 @@ class _ProfileEditState extends State<ProfileEdit> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                80,
-                20,
-                20,
-              ), // shifted down
+              padding: const EdgeInsets.fromLTRB(20, 140, 20, 20), // More DOWN
               child: Column(
                 children: [
                   Stack(
