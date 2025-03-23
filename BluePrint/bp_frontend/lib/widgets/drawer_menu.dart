@@ -1,11 +1,13 @@
+// ... [other imports remain unchanged]
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../providers/project_provider.dart';
 import '../screens/user_settings.dart';
 import '../screens/vendor_list_screen.dart';
 import '../screens/community_gallery_screen.dart';
 import '../services/auth_service.dart';
-import '../screens/chat_screen.dart'; // ✅ Make sure this import is added
+import '../screens/chat_screen.dart';
 
 class DrawerMenu extends StatelessWidget {
   final Function(String projectId)? onProjectSelected;
@@ -60,7 +62,7 @@ class DrawerMenu extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CommunityGalleryScreen(),
+                    builder: (context) => const CommunityGalleryScreen(),
                   ),
                 );
               }),
@@ -100,8 +102,8 @@ class DrawerMenu extends StatelessWidget {
                                       }
                                     },
                                     itemBuilder:
-                                        (context) => [
-                                          const PopupMenuItem(
+                                        (context) => const [
+                                          PopupMenuItem(
                                             value: 'rename',
                                             child: Text("Rename"),
                                           ),
@@ -114,7 +116,7 @@ class DrawerMenu extends StatelessWidget {
                                   Icons.delete,
                                   color: Colors.red,
                                 ),
-                                onPressed: () async {
+                                onPressed: () {
                                   // TODO: Implement delete functionality
                                 },
                               ),
@@ -141,23 +143,57 @@ class DrawerMenu extends StatelessWidget {
 
               const Divider(),
 
-              ListTile(
-                leading: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.blue.shade100,
-                  child: const Icon(Icons.person, color: Colors.blue, size: 28),
-                ),
-                title: Text(user?.email ?? "Guest"),
-                trailing: const Icon(Icons.more_horiz),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UserProfile(),
+              FutureBuilder<DocumentSnapshot>(
+                future:
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user?.uid)
+                        .get(),
+                builder: (context, snapshot) {
+                  String imageUrl = "";
+                  String userDisplayName = user?.email ?? "Guest";
+
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData &&
+                      snapshot.data!.data() != null) {
+                    final data = snapshot.data!.data() as Map<String, dynamic>;
+
+                    imageUrl =
+                        data['profileImage'] ??
+                        "https://www.woolha.com/media/2020/03/eevee.png";
+
+                    final firstName = data['first_name'] ?? '';
+                    final lastName = data['last_name'] ?? '';
+                    final fullName = "$firstName $lastName".trim();
+
+                    if (fullName.isNotEmpty) {
+                      userDisplayName = fullName;
+                    }
+                  }
+
+                  return ListTile(
+                    leading: CircleAvatar(
+                      radius: 22,
+                      backgroundImage:
+                          imageUrl.isNotEmpty
+                              ? NetworkImage(imageUrl)
+                              : const AssetImage("assets/default-avatar.png")
+                                  as ImageProvider,
                     ),
+                    title: Text(userDisplayName),
+                    trailing: const Icon(Icons.more_horiz),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserProfile(),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
+
               const SizedBox(height: 20),
             ],
           ),

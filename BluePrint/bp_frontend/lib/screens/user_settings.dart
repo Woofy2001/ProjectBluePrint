@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'profile_edit.dart';
+import 'auth_screen.dart'; // ✅ Adjust this if needed
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -50,7 +51,10 @@ class _UserProfileState extends State<UserProfile> {
   void _logout() async {
     await FirebaseAuth.instance.signOut();
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const AuthScreen()), // ✅ working logout
+    );
   }
 
   @override
@@ -141,10 +145,20 @@ class _UserProfileState extends State<UserProfile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Back', style: TextStyle(fontSize: 16)),
                           GestureDetector(
                             onTap: () {
-                              // Keep using Edit page if required
+                              Navigator.pop(context); // ✅ WORKING BACK
+                            },
+                            child: const Text(
+                              'Back',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -156,7 +170,7 @@ class _UserProfileState extends State<UserProfile> {
                                           phone: phone,
                                           address: address,
                                         ),
-                                      ), // optional
+                                      ),
                                 ),
                               );
                             },
