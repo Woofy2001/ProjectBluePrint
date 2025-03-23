@@ -344,4 +344,24 @@ class ProjectProvider extends ChangeNotifier {
     await fetchUserProjects();
     return projectId;
   }
+
+  Future<void> deleteProject(String projectId) async {
+    String? userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    try {
+      final projectRef = _firestore
+          .collection("users")
+          .doc(userId)
+          .collection("projects")
+          .doc(projectId);
+
+      await projectRef.delete();
+      _projects.removeWhere((p) => p.id == projectId);
+      notifyListeners();
+      print("✅ [deleteProject] Project deleted: $projectId");
+    } catch (e) {
+      print("❌ [deleteProject] Error: $e");
+    }
+  }
 }

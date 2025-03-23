@@ -78,47 +78,42 @@ class DrawerMenu extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final project = projectProvider.projects[index];
                             return ListTile(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      project.name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  PopupMenuButton<String>(
-                                    onSelected: (value) {
-                                      if (value == 'rename') {
-                                        _showRenameDialog(
-                                          context,
-                                          project.id,
-                                          project.name,
-                                        );
-                                      }
-                                    },
-                                    itemBuilder:
-                                        (context) => const [
-                                          PopupMenuItem(
-                                            value: 'rename',
-                                            child: Text("Rename"),
-                                          ),
-                                        ],
-                                  ),
-                                ],
-                              ),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
+                              title: Text(
+                                project.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                onPressed: () {
-                                  // TODO: Implement delete functionality
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: PopupMenuButton<String>(
+                                onSelected: (value) async {
+                                  if (value == 'rename') {
+                                    _showRenameDialog(
+                                      context,
+                                      project.id,
+                                      project.name,
+                                    );
+                                  } else if (value == 'delete') {
+                                    await Provider.of<ProjectProvider>(
+                                      context,
+                                      listen: false,
+                                    ).deleteProject(project.id);
+                                  }
                                 },
+                                itemBuilder:
+                                    (context) => [
+                                      const PopupMenuItem(
+                                        value: 'rename',
+                                        child: Text("Rename"),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'delete',
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                    ],
                               ),
                               onTap: () async {
                                 Navigator.pop(context); // Close drawer
