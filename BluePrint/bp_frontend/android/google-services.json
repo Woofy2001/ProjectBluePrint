@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "544802835659",
+    "project_id": "blueprint-e03fb",
+    "storage_bucket": "blueprint-e03fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544802835659:android:41eff905ff0c75bbfb9f4e",
+        "android_client_info": {
+          "package_name": "com.example.bp_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "544802835659-bu1tbvfbrmos4cbgng58d0a76tdne7te.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAingPOql6TtcTPPxuW5lq67uS6ZTijRZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "544802835659-bu1tbvfbrmos4cbgng58d0a76tdne7te.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "544802835659-1b2rbev8v5rprui04ul3t1laacc03btv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bpFrontend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
