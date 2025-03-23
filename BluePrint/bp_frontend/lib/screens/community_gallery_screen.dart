@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../providers/project_provider.dart';
 import './chat_screen.dart';
+import '../widgets/drawer_menu.dart'; // ✅ Make sure this import is present
 
 class CommunityGalleryScreen extends StatelessWidget {
   const CommunityGalleryScreen({super.key});
@@ -12,12 +13,18 @@ class CommunityGalleryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const DrawerMenu(), // ✅ Added working drawer
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {}, // Implement drawer or menu action
+        leading: Builder(
+          builder:
+              (context) => IconButton(
+                icon: const Icon(Icons.menu, color: Colors.black),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer(); // ✅ Opens the drawer
+                },
+              ),
         ),
         title: const Text(
           "BluePrint",
