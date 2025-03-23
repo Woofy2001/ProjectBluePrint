@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:ui';
 import '../models/user_profile_data.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -47,9 +48,48 @@ class _ProfileEditState extends State<ProfileEdit> {
     }
   }
 
+  void _viewProfilePicture() {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "View Profile",
+      pageBuilder:
+          (_, __, ___) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                color: Colors.black.withOpacity(0.6),
+                alignment: Alignment.center,
+                child: InteractiveViewer(
+                  child: Container(
+                    width: 250,
+                    height: 250,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image:
+                            _profileImage == null
+                                ? const AssetImage('assets/images/profile.jpg')
+                                    as ImageProvider
+                                : FileImage(File(_profileImage!.path)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+  }
+
   void _showBottomSheet() {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (BuildContext context) {
         return Container(
           padding: const EdgeInsets.all(20),
@@ -69,6 +109,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                 title: const Text('View Profile Picture'),
                 onTap: () {
                   Navigator.pop(context);
+                  _viewProfilePicture();
                 },
               ),
             ],
@@ -121,7 +162,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    //Profile edit icon
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -129,7 +169,9 @@ class _ProfileEditState extends State<ProfileEdit> {
                           radius: 70,
                           backgroundImage:
                               _profileImage == null
-                                  ? AssetImage('assets/images/profile.jpg')
+                                  ? const AssetImage(
+                                        'assets/images/profile.jpg',
+                                      )
                                       as ImageProvider
                                   : FileImage(File(_profileImage!.path)),
                         ),
@@ -158,7 +200,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       widget.user.name,
@@ -168,8 +209,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                       ),
                     ),
                     const SizedBox(height: 30),
-
-                    // Username
                     TextFormField(
                       controller: nameController,
                       decoration: _fieldDecoration(
@@ -180,15 +219,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                           (value) => _validateRequired(value, 'Username'),
                     ),
                     const SizedBox(height: 10),
-
-                    // Email (read-only)
                     Text(
                       widget.user.email,
                       style: const TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 10),
-
-                    // Phone number
                     TextFormField(
                       controller: phoneController,
                       decoration: _fieldDecoration(
@@ -198,8 +233,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                       validator: _validatePhone,
                     ),
                     const SizedBox(height: 10),
-
-                    // Address
                     TextFormField(
                       controller: addressController,
                       decoration: _fieldDecoration(
@@ -212,8 +245,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                 ),
               ),
             ),
-
-            // Top bar with "Back" and "Done"
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
