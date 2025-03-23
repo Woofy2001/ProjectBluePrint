@@ -22,7 +22,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final Map<String, String> _promptMap = {};
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isProcessing = false;
@@ -54,7 +53,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() => _isProcessing = true);
 
-    // Add user message first
     await projectProvider.addMessage(
       projectId: widget.projectId,
       text: userInput,
@@ -65,15 +63,12 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
 
     try {
-      // Pass projectId along with userInput
       String imageUrl = await projectProvider.generateFloorPlan(
-        widget.projectId, // Ensure projectId is passed
+        widget.projectId,
         userInput,
       );
 
       setState(() => _isProcessing = false);
-
-      // Store bot response and generated image in Firestore
       _scrollToBottom();
     } catch (e) {
       setState(() => _isProcessing = false);
@@ -125,8 +120,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       sender: message["sender"] ?? "Unknown",
                       text: message["text"] ?? "",
                       imageUrl: message["image"] ?? "",
-                      allMessages: project.messages, // ✅ fixed
-                      index: index, // ✅ fixed
+                      allMessages: project.messages,
+                      index: index,
                     );
                   },
                 );
@@ -196,22 +191,24 @@ class _ChatScreenState extends State<ChatScreen> {
                   onPressed: () async {
                     final user = FirebaseAuth.instance.currentUser;
                     if (user != null) {
-                      // Get the user data
                       final userName =
                           user.displayName ?? user.email ?? "Anonymous";
-                      final userImage =
-                          user.photoURL ??
-                          "https://default-image-url.com"; // Default image if user has no photo
 
-                      // Pass projectId, prompt, and imageUrl to the shareToGallery method
+                      final userImage =
+                          user.photoURL ?? "https://default-image-url.com";
+
+                      final userPrompt = _getLastUserMessageBeforeIndex(
+                        allMessages,
+                        index,
+                      );
+
                       await Provider.of<ProjectProvider>(
                         context,
                         listen: false,
                       ).shareToGallery(
                         userName: userName,
-                        projectId: widget.projectId, // Pass projectId here
-                        prompt:
-                            _promptMap[imageUrl] ?? text, // ✅ real user prompt
+                        projectId: widget.projectId,
+                        prompt: userPrompt,
                         imageUrl: imageUrl,
                       );
 
@@ -230,6 +227,19 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  String _getLastUserMessageBeforeIndex(
+    List<Map<String, dynamic>> messages,
+    int index,
+  ) {
+    for (int i = index - 1; i >= 0; i--) {
+      final msg = messages[i];
+      if (msg['sender'] == 'user' && msg['text'] != null) {
+        return msg['text'];
+      }
+    }
+    return "User prompt not found";
   }
 
   Widget _chatInputField() {
