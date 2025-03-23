@@ -13,6 +13,8 @@ class ProfileEdit extends StatefulWidget {
 }
 
 class _ProfileEditState extends State<ProfileEdit> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   late TextEditingController nameController;
   late TextEditingController phoneController;
   late TextEditingController addressController;
@@ -89,6 +91,24 @@ class _ProfileEditState extends State<ProfileEdit> {
     );
   }
 
+  String? _validateRequired(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName is required';
+    }
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+    final phoneRegExp = RegExp(r'^\+?\d[\d\s]{6,}$');
+    if (!phoneRegExp.hasMatch(value.trim())) {
+      return 'Enter a valid phone number';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,66 +116,83 @@ class _ProfileEditState extends State<ProfileEdit> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 140, 20, 20), // More DOWN
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.bottomRight,
-                    children: [
-                      CircleAvatar(
-                        radius: 70,
-                        backgroundImage:
-                            _profileImage == null
-                                ? AssetImage('assets/images/profile.jpg')
-                                    as ImageProvider
-                                : FileImage(File(_profileImage!.path)),
+              padding: const EdgeInsets.fromLTRB(20, 140, 20, 20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundImage:
+                              _profileImage == null
+                                  ? AssetImage('assets/images/profile.jpg')
+                                      as ImageProvider
+                                  : FileImage(File(_profileImage!.path)),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          onPressed: _showBottomSheet,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      widget.user.name,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.white),
-                        onPressed: _showBottomSheet,
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Name Field
+                    TextFormField(
+                      controller: nameController,
+                      decoration: _fieldDecoration(
+                        'New username',
+                        Icons.person_outline,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.user.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      validator:
+                          (value) => _validateRequired(value, 'Username'),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  TextField(
-                    controller: nameController,
-                    decoration: _fieldDecoration(
-                      'New username',
-                      Icons.person_outline,
+                    const SizedBox(height: 10),
+
+                    // Email (readonly)
+                    Text(
+                      widget.user.email,
+                      style: const TextStyle(color: Colors.grey),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    widget.user.email,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: phoneController,
-                    decoration: _fieldDecoration(
-                      'New contact number',
-                      Icons.phone_outlined,
+                    const SizedBox(height: 10),
+
+                    // Phone Field
+                    TextFormField(
+                      controller: phoneController,
+                      decoration: _fieldDecoration(
+                        'New contact number',
+                        Icons.phone_outlined,
+                      ),
+                      validator: _validatePhone,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: addressController,
-                    decoration: _fieldDecoration(
-                      'New address',
-                      Icons.location_on_outlined,
+                    const SizedBox(height: 10),
+
+                    // Address Field
+                    TextFormField(
+                      controller: addressController,
+                      decoration: _fieldDecoration(
+                        'New address',
+                        Icons.location_on_outlined,
+                      ),
+                      validator: (value) => _validateRequired(value, 'Address'),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
+
+            // Top bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
@@ -166,16 +203,19 @@ class _ProfileEditState extends State<ProfileEdit> {
                     child: const Text('Back', style: TextStyle(fontSize: 16)),
                   ),
                   GestureDetector(
-                    onTap:
-                        () => Navigator.pop(
+                    onTap: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.pop(
                           context,
                           UserProfileData(
-                            name: nameController.text,
+                            name: nameController.text.trim(),
                             email: widget.user.email,
-                            phone: phoneController.text,
-                            address: addressController.text,
+                            phone: phoneController.text.trim(),
+                            address: addressController.text.trim(),
                           ),
-                        ),
+                        );
+                      }
+                    },
                     child: const Text(
                       'Done',
                       style: TextStyle(
