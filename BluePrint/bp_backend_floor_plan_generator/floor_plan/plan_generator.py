@@ -1,44 +1,3 @@
-
-# ===========================
-# 🚀 IMPLEMENTED FEATURES (WORLD-CLASS)
-# ===========================
-
-# ✅ Sunlight-Aware Orientation
-# Rooms are placed with east/south-facing windows where possible.
-
-# ✅ Exterior Wall Window Placement
-# Windows appear only on sides with no adjacent room.
-
-# ✅ Public/Private Zoning
-# Rooms grouped logically: living/kitchen front, bedrooms/bath rear.
-
-# ✅ Pathfinding Validation
-# All rooms connected via living room graph traversal.
-
-# ✅ Irregular Room Shapes (L, T)
-# Select rooms can now form L-shaped layouts using segmented rectangles.
-
-# ===========================
-
-
-# ===========================
-# MASTER PLAN ARCHITECTURE MODE
-# ===========================
-# 🧭 North + Sunlight-Aware Orientation
-#    - Living room and kitchen face East or South for morning/afternoon light.
-# 🪟 Exterior Wall Window Placement
-#    - Detect outer edges and add windows only to non-shared walls.
-# 🧭 Public/Private Zoning
-#    - Separate layout into zones (e.g. kitchen/living vs bedroom/bath).
-# 🗺️ Pathfinding Validation
-#    - Run access check to ensure all rooms are reachable from the living room.
-# 📐 Irregular Room Shape Support (L, T)
-#    - Allow some rooms to be drawn as L-shaped later (via offsets).
-#
-# NOTE: These will be implemented step-by-step in upcoming commits.
-# ===========================
-
-
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -63,10 +22,13 @@ def generate_floor_plan(house_data):
         "garage": (2, 2)
     }
 
-    zones = {
-        "social": ["living room", "hallway"],
-        "private": ["bedroom", "bathroom"],
-        "service": ["kitchen", "garage"]
+    colors = {
+        "living room": "lightgray",
+        "kitchen": "skyblue",
+        "bedroom": "salmon",
+        "bathroom": "lightgreen",
+        "hallway": "wheat",
+        "garage": "silver"
     }
 
     adjacency_weights = {
@@ -82,126 +44,139 @@ def generate_floor_plan(house_data):
 
     forbidden_adjacency = {("garage", "bedroom"), ("bedroom", "garage")}
 
-    colors = {
-        "living room": "lightgray",
-        "kitchen": "skyblue",
-        "bedroom": "salmon",
-        "bathroom": "lightgreen",
-        "hallway": "wheat",
-        "garage": "silver"
-    }
-
-    placed = []
-    occupied = set()
     layout = {}
-    room_locations = {}
+    occupied = set()
+    room_instances = []
 
-    center = (100 + random.randint(0, 10), 100 + random.randint(0, 10))
+    center = (100, 100)
 
-    def mark_occupied(x, y, w, h, name):
+    def mark_occupied(x, y, w, h, room_key):
         for dx in range(w):
             for dy in range(h):
-                occupied.add((x+dx, y+dy))
-                layout[(x+dx, y+dy)] = name
-        room_locations.setdefault(name, []).append((x, y, w, h))
+                occupied.add((x + dx, y + dy))
+                layout[(x + dx, y + dy)] = room_key
 
-    def can_place(x, y, w, h, room_type):
-        for dx in range(w):
-            for dy in range(h):
-                if (x+dx, y+dy) in occupied:
-                    return False
-        for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
-            for i in range(w):
-                for j in range(h):
-                    nx, ny = x+i+dx, y+j+dy
-                    neighbor = layout.get((nx, ny))
-                    if neighbor and (room_type, neighbor) in forbidden_adjacency:
-                        return False
-        return True
+    def can_place(x, y, w, h):
+        return all((x + dx, y + dy) not in occupied for dx in range(w) for dy in range(h))
 
-    def draw_room(x, y, w, h, name):
+    def draw_room(name, x, y, w, h, idx):
         px, py = x * grid_size, y * grid_size
-        rect = Rectangle((px, py), w * grid_size, h * grid_size,
-                         facecolor=colors.get(name, "gray"), edgecolor="black", linewidth=2)
-        ax.add_patch(rect)
-        ax.text(px + w * grid_size / 2, py + h * grid_size / 2, name,
-                ha="center", va="center", fontsize=9)
-        mark_occupied(x, y, w, h, name)
-        placed.append((name, x, y, w, h))
+        ax.add_patch(Rectangle((px, py), w * grid_size, h * grid_size, facecolor=colors[name], edgecolor="black", linewidth=2))
+        ax.text(px + w * grid_size / 2, py + h * grid_size / 2, f"{name}", ha="center", va="center", fontsize=9)
+        mark_occupied(x, y, w, h, (name, idx))
+        room_instances.append({"name": name, "id": idx, "x": x, "y": y, "w": w, "h": h})
 
-    # Step 1: Place Living Room at center
     lx, ly = center
     lw, lh = room_sizes["living room"]
-    draw_room(lx, ly, lw, lh, "living room")
-
-    # Prevent duplicate living room
+    draw_room("living room", lx, ly, lw, lh, 0)
     if "living room" in room_counts:
         room_counts["living room"] -= 1
         if room_counts["living room"] <= 0:
             del room_counts["living room"]
 
-    # Step 2: Prepare queue of all rooms by zones
-    room_queue = []
-    for zone in ["social", "private", "service"]:
-        for name in zones[zone]:
-            if name in room_counts:
-                room_queue.extend([name] * room_counts[name])
-    random.shuffle(room_queue)
+    queue = []
+    counter = {}
+    for name, count in room_counts.items():
+        for i in range(count):
+            queue.append(name)
+            counter[name] = counter.get(name, 0) + 1
 
-    def find_weighted_target(room):
-        candidates = []
-        for (tx, ty), target in layout.items():
-            weight = adjacency_weights.get((room, target), adjacency_weights.get((target, room), 1))
-            candidates.append((weight, tx, ty, target))
-        random.shuffle(candidates)
-        return sorted(candidates, key=lambda x: -x[0])
+    random.shuffle(queue)
 
-    for room in room_queue:
-        base_w, base_h = room_sizes[room]
-        if random.random() > 0.5:
-            w, h = base_w, base_h
-        else:
-            w, h = base_h, base_w
-        placed_flag = False
-        for _, tx, ty, target in find_weighted_target(room):
+    def neighbors(name):
+        score = []
+        for (x, y), (rtype, rid) in layout.items():
+            weight = adjacency_weights.get((name, rtype), adjacency_weights.get((rtype, name), 1))
+            score.append((weight, x, y))
+        return sorted(score, key=lambda z: -z[0])
+
+    idx_map = {}
+    for name in queue:
+        w, h = room_sizes[name]
+        idx = idx_map.get(name, 1)
+        idx_map[name] = idx + 1
+        for _, tx, ty in neighbors(name):
             for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
-                px, py = tx + dx, ty + dy
-                if can_place(px, py, w, h, room):
-                    draw_room(px, py, w, h, room)
-                    placed_flag = True
+                x, y = tx + dx, ty + dy
+                if can_place(x, y, w, h):
+                    draw_room(name, x, y, w, h, idx)
                     break
-            if placed_flag:
-                break
+            else:
+                continue
+            break
 
-    def draw_doors():
-        for (x, y), name in layout.items():
-            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
-                nx, ny = x + dx, y + dy
-                if (nx, ny) in layout:
-                    neighbor = layout[(nx, ny)]
-                    pair = (name, neighbor)
-                    if pair in adjacency_weights or (neighbor, name) in adjacency_weights:
-                        cx = x * grid_size + grid_size // 2
-                        cy = y * grid_size + grid_size // 2
-                        ax.plot([cx - 2, cx + 2], [cy, cy], color="white", linewidth=4)
+    drawn = set()
+    placed_doors = {}
+    for r1 in room_instances:
+        for r2 in room_instances:
+            if r1 == r2 or ((r1["name"], r1["id"]), (r2["name"], r2["id"])) in drawn:
+                continue
+            if {r1["name"], r2["name"]} == {"bedroom"}:
+                continue  # 🚫 No doors between bedrooms
+            x1, y1, w1, h1 = r1["x"], r1["y"], r1["w"], r1["h"]
+            x2, y2, w2, h2 = r2["x"], r2["y"], r2["w"], r2["h"]
+            placed = False
+            # right
+            if x1 + w1 == x2 and y1 < y2 + h2 and y1 + h1 > y2:
+                door_x = (x1 + w1) * grid_size
+                door_y = max(y1, y2) * grid_size + grid_size // 2
+                ax.plot([door_x, door_x], [door_y - 5, door_y + 5], color="white", linewidth=4)
+                placed = True
+            elif x2 + w2 == x1 and y1 < y2 + h2 and y1 + h1 > y2:
+                door_x = x1 * grid_size
+                door_y = max(y1, y2) * grid_size + grid_size // 2
+                ax.plot([door_x, door_x], [door_y - 5, door_y + 5], color="white", linewidth=4)
+                placed = True
+            elif y1 + h1 == y2 and x1 < x2 + w2 and x1 + w1 > x2:
+                door_x = max(x1, x2) * grid_size + grid_size // 2
+                door_y = (y1 + h1) * grid_size
+                ax.plot([door_x - 5, door_x + 5], [door_y, door_y], color="white", linewidth=4)
+                placed = True
+            elif y2 + h2 == y1 and x1 < x2 + w2 and x1 + w1 > x2:
+                door_x = max(x1, x2) * grid_size + grid_size // 2
+                door_y = y1 * grid_size
+                ax.plot([door_x - 5, door_x + 5], [door_y, door_y], color="white", linewidth=4)
+                placed = True
 
-    draw_doors()
+            if placed:
+                key = r1["name"] + str(r1["id"]) if r1["name"] == "bathroom" else r2["name"] + str(r2["id"])
+                if "bathroom" in {r1["name"], r2["name"]} and key in placed_doors:
+                    continue
+                placed_doors[key] = True
+                drawn.add(((r1["name"], r1["id"]), (r2["name"], r2["id"])))
 
-    ax.annotate('N', xy=(center[0]*grid_size - 60, center[1]*grid_size + 180),
-                fontsize=14, fontweight='bold', color='black',
-                arrowprops=dict(facecolor='black', width=1, headwidth=6))
-
-    xs = [x * grid_size for (x, y) in layout]
-    ys = [y * grid_size for (x, y) in layout]
-    ax.set_xlim(min(xs) - 60, max(xs) + 180)
-    ax.set_ylim(min(ys) - 60, max(ys) + 180)
-    ax.set_aspect('equal')
-    ax.set_title("Pro Floor Plan: Zoned Layout with Weighted Adjacency & Compass")
-    handles, labels = ax.get_legend_handles_labels()
-    unique = dict(zip(labels, handles))
-    ax.legend(unique.values(), unique.keys(), loc="upper right")
+    for r in room_instances:
+        if r["name"] == "living room":
+            x, y, w, h = r["x"], r["y"], r["w"], r["h"]
+            edges = {
+                "bottom": [(x + i, y - 1) for i in range(w)],
+                "top": [(x + i, y + h) for i in range(w)],
+                "left": [(x - 1, y + i) for i in range(h)],
+                "right": [(x + w, y + i) for i in range(h)],
+            }
+            for side, coords in edges.items():
+                if all(c not in layout for c in coords):
+                    if side == "bottom":
+                        px = (x + w // 2) * grid_size
+                        py = y * grid_size
+                        ax.plot([px - 5, px + 5], [py, py], color="white", linewidth=4)
+                    elif side == "top":
+                        px = (x + w // 2) * grid_size
+                        py = (y + h) * grid_size
+                        ax.plot([px - 5, px + 5], [py, py], color="white", linewidth=4)
+                    elif side == "left":
+                        px = x * grid_size
+                        py = (y + h // 2) * grid_size
+                        ax.plot([px, px], [py - 5, py + 5], color="white", linewidth=4)
+                    elif side == "right":
+                        px = (x + w) * grid_size
+                        py = (y + h // 2) * grid_size
+                        ax.plot([px, px], [py - 5, py + 5], color="white", linewidth=4)
+                    break
+            break
 
     os.makedirs("static", exist_ok=True)
+    plt.axis("off")
     plt.savefig("static/floor_plan.png", dpi=100, bbox_inches="tight")
     plt.close()
     return "floor_plan.png"
