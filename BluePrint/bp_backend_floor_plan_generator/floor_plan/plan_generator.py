@@ -1,139 +1,182 @@
 import matplotlib
-matplotlib.use('Agg')  # ✅ Use non-GUI backend to avoid NSWindow errors on macOS
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from shapely.geometry import Polygon
+from matplotlib.patches import Rectangle
 import os
 import random
-import math
 
 def generate_floor_plan(house_data):
-    """Generates a structured 2D floor plan with dynamically scaled rooms, ensuring proper adjacency and no missing placements."""
-    
-    # ✅ Validate house_data before proceeding
-    if "width" not in house_data or "height" not in house_data or "rooms" not in house_data:
-        raise ValueError("Invalid house data format. Must include 'width', 'height', and 'rooms'.")
+    if "rooms" not in house_data:
+        raise ValueError("Missing room config")
 
-    base_width, base_height = house_data["width"], house_data["height"]
-    total_rooms = sum(house_data["rooms"].values())
-    canvas_scaling_factor = max(1, math.ceil(total_rooms / 5))  # Auto-adjust size
-    width, height = base_width * canvas_scaling_factor, base_height * canvas_scaling_factor
+    room_counts = house_data["rooms"]
+    grid_size = 30
+    fig, ax = plt.subplots(figsize=(16, 12))
 
-    fig, ax = plt.subplots(figsize=(12, 9))  # Optimized canvas size
-    print(f"✅ Initializing floor plan with width: {width} and height: {height}")
-
-    # ✅ Define proportional room sizes dynamically
-    base_size = max(5, min(width, height) // 7)  # Minimum room size enforced
     room_sizes = {
-        "living room": (base_size * 2, base_size * 1.5),
-        "bedroom": (base_size * 1.2, base_size),
-        "bathroom": (base_size * 0.8, base_size * 0.7),
-        "kitchen": (base_size * 1.5, base_size),
-        "garage": (base_size * 2, base_size * 1.2)
+        "living room": (3, 2),
+        "kitchen": (2, 1),
+        "bedroom": (2, 1),
+        "bathroom": (1, 1),
+        "hallway": (1, 3),
+        "garage": (2, 2)
     }
 
-    occupied_positions = set()
-    placed_rooms = {}
-    room_coords = {}
-    adjacency_rules = {
-        "bedroom": ["living room", "bathroom"],
-        "bathroom": ["bedroom", "kitchen"],
-        "kitchen": ["living room", "garage"],
-        "garage": ["kitchen", "living room"]
+    colors = {
+        "living room": "lightgray",
+        "kitchen": "skyblue",
+        "bedroom": "salmon",
+        "bathroom": "lightgreen",
+        "hallway": "wheat",
+        "garage": "silver"
     }
 
-    def check_overlap(x, y, width, height):
-        """Check if a room overlaps with existing ones."""
-        for (ox, oy, ow, oh) in occupied_positions:
-            if not (x + width <= ox or x >= ox + ow or y + height <= oy or y >= oy + oh):
-                return True  # Overlapping detected
-        return False
+    adjacency_weights = {
+        ("bedroom", "bathroom"): 10,
+        ("bedroom", "living room"): 8,
+        ("kitchen", "living room"): 10,
+        ("bathroom", "hallway"): 7,
+        ("garage", "kitchen"): 8,
+        ("hallway", "bedroom"): 5,
+        ("hallway", "bathroom"): 5,
+        ("hallway", "kitchen"): 5
+    }
 
-    def find_adjacent_position(ref_x, ref_y, room_w, room_h):
-        """Finds a valid adjacent position while avoiding overlaps."""
-        possible_positions = [
-            (ref_x + room_w, ref_y), (ref_x - room_w, ref_y),
-            (ref_x, ref_y + room_h), (ref_x, ref_y - room_h)
-        ]
-        random.shuffle(possible_positions)
-        for new_x, new_y in possible_positions:
-            if not check_overlap(new_x, new_y, room_w, room_h):
-                occupied_positions.add((new_x, new_y, room_w, room_h))
-                return new_x, new_y
-        return None, None
+    forbidden_adjacency = {("garage", "bedroom"), ("bedroom", "garage")}
 
-    def draw_room(ax, x, y, width, height, label, color):
-        """Draws a room as a rectangle on the floor plan."""
-        outer_polygon = Polygon([
-            (x, y), (x + width, y), (x + width, y + height), (x, y + height)
-        ])
-        ax.fill(*outer_polygon.exterior.xy, alpha=0.5, label=label, color=color)
-        ax.plot(*outer_polygon.exterior.xy, color="black", linewidth=2)
-        ax.text(x + width / 2, y + height / 2, label, fontsize=9, color="black", ha="center", va="center")
-        return (x, y, width, height)
+    layout = {}
+    occupied = set()
+    room_instances = []
 
-    def add_doorway_gap(ax, room1, room2):
-        """Creates a small doorway gap between two adjacent rooms."""
-        x1, y1, w1, h1 = room1
-        x2, y2, w2, h2 = room2
+    center = (100, 100)
 
-        if abs(x1 - x2) < w1:  # Vertical adjacency
-            door_x = (x1 + x2 + w1) / 2
-            door_y = max(y1, y2) + 0.5
-            ax.plot([door_x - 0.5, door_x + 0.5], [door_y, door_y], color="white", linewidth=5)
-        else:  # Horizontal adjacency
-            door_x = max(x1, x2) + 0.5
-            door_y = (y1 + y2 + h1) / 2
-            ax.plot([door_x, door_x], [door_y - 0.5, door_y + 0.5], color="white", linewidth=5)
+    def mark_occupied(x, y, w, h, room_key):
+        for dx in range(w):
+            for dy in range(h):
+                occupied.add((x + dx, y + dy))
+                layout[(x + dx, y + dy)] = room_key
 
-    # ✅ Place the living room at the center of the canvas
-    center_x, center_y = width // 3, height // 2
-    occupied_positions.add((center_x, center_y, *room_sizes["living room"]))
-    placed_rooms["living room"] = (center_x, center_y)
-    room_coords["living room"] = draw_room(ax, center_x, center_y, *room_sizes["living room"], "living room", "lightgray")
+    def can_place(x, y, w, h):
+        return all((x + dx, y + dy) not in occupied for dx in range(w) for dy in range(h))
 
-    for room_name, room_count in house_data["rooms"].items():
-        for _ in range(room_count):
-            if room_name == "living room" and "living room" in placed_rooms:
-                continue  # Ensure only one living room is placed
+    def draw_room(name, x, y, w, h, idx):
+        px, py = x * grid_size, y * grid_size
+        ax.add_patch(Rectangle((px, py), w * grid_size, h * grid_size, facecolor=colors[name], edgecolor="black", linewidth=2))
+        ax.text(px + w * grid_size / 2, py + h * grid_size / 2, f"{name}", ha="center", va="center", fontsize=9)
+        mark_occupied(x, y, w, h, (name, idx))
+        room_instances.append({"name": name, "id": idx, "x": x, "y": y, "w": w, "h": h})
 
-            ref_rooms = adjacency_rules.get(room_name, ["living room"])
+    lx, ly = center
+    lw, lh = room_sizes["living room"]
+    draw_room("living room", lx, ly, lw, lh, 0)
+    if "living room" in room_counts:
+        room_counts["living room"] -= 1
+        if room_counts["living room"] <= 0:
+            del room_counts["living room"]
+
+    queue = []
+    counter = {}
+    for name, count in room_counts.items():
+        for i in range(count):
+            queue.append(name)
+            counter[name] = counter.get(name, 0) + 1
+
+    random.shuffle(queue)
+
+    def neighbors(name):
+        score = []
+        for (x, y), (rtype, rid) in layout.items():
+            weight = adjacency_weights.get((name, rtype), adjacency_weights.get((rtype, name), 1))
+            score.append((weight, x, y))
+        return sorted(score, key=lambda z: -z[0])
+
+    idx_map = {}
+    for name in queue:
+        w, h = room_sizes[name]
+        idx = idx_map.get(name, 1)
+        idx_map[name] = idx + 1
+        for _, tx, ty in neighbors(name):
+            for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+                x, y = tx + dx, ty + dy
+                if can_place(x, y, w, h):
+                    draw_room(name, x, y, w, h, idx)
+                    break
+            else:
+                continue
+            break
+
+    drawn = set()
+    placed_doors = {}
+    for r1 in room_instances:
+        for r2 in room_instances:
+            if r1 == r2 or ((r1["name"], r1["id"]), (r2["name"], r2["id"])) in drawn:
+                continue
+            if {r1["name"], r2["name"]} == {"bedroom"}:
+                continue  # 🚫 No doors between bedrooms
+            x1, y1, w1, h1 = r1["x"], r1["y"], r1["w"], r1["h"]
+            x2, y2, w2, h2 = r2["x"], r2["y"], r2["w"], r2["h"]
             placed = False
-            random.shuffle(ref_rooms)
-            for ref_room in ref_rooms:
-                if ref_room in placed_rooms:
-                    ref_x, ref_y = placed_rooms[ref_room]
-                    new_x, new_y = find_adjacent_position(ref_x, ref_y, *room_sizes[room_name])
-                    if new_x is not None and new_y is not None:
-                        occupied_positions.add((new_x, new_y, *room_sizes[room_name]))
-                        placed_rooms[room_name] = (new_x, new_y)
-                        room_coords[room_name] = draw_room(ax, new_x, new_y, *room_sizes[room_name], room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
-                        add_doorway_gap(ax, room_coords[ref_room], room_coords[room_name])
-                        placed = True
-                        break
-            if not placed:
-                print(f"⚠ Warning: {room_name} was not placed. Expanding search range.")
-                for _ in range(5):  # Allow more retries with varied offsets
-                    new_x, new_y = random.randint(0, width - int(room_sizes[room_name][0])), random.randint(0, height - int(room_sizes[room_name][1]))
-                    if not check_overlap(new_x, new_y, *room_sizes[room_name]):
-                        occupied_positions.add((new_x, new_y, *room_sizes[room_name]))
-                        placed_rooms[room_name] = (new_x, new_y)
-                        room_coords[room_name] = draw_room(ax, new_x, new_y, *room_sizes[room_name], room_name, random.choice(["skyblue", "orange", "lightgreen", "brown", "pink"]))
-                        break
+            # right
+            if x1 + w1 == x2 and y1 < y2 + h2 and y1 + h1 > y2:
+                door_x = (x1 + w1) * grid_size
+                door_y = max(y1, y2) * grid_size + grid_size // 2
+                ax.plot([door_x, door_x], [door_y - 5, door_y + 5], color="white", linewidth=4)
+                placed = True
+            elif x2 + w2 == x1 and y1 < y2 + h2 and y1 + h1 > y2:
+                door_x = x1 * grid_size
+                door_y = max(y1, y2) * grid_size + grid_size // 2
+                ax.plot([door_x, door_x], [door_y - 5, door_y + 5], color="white", linewidth=4)
+                placed = True
+            elif y1 + h1 == y2 and x1 < x2 + w2 and x1 + w1 > x2:
+                door_x = max(x1, x2) * grid_size + grid_size // 2
+                door_y = (y1 + h1) * grid_size
+                ax.plot([door_x - 5, door_x + 5], [door_y, door_y], color="white", linewidth=4)
+                placed = True
+            elif y2 + h2 == y1 and x1 < x2 + w2 and x1 + w1 > x2:
+                door_x = max(x1, x2) * grid_size + grid_size // 2
+                door_y = y1 * grid_size
+                ax.plot([door_x - 5, door_x + 5], [door_y, door_y], color="white", linewidth=4)
+                placed = True
 
-    ax.set_xlim(0, width)
-    ax.set_ylim(0, height)
-    ax.set_title("Generated 2D Floor Plan - Optimized Layout with Doorway Gaps & Randomization")
-    ax.legend()
+            if placed:
+                key = r1["name"] + str(r1["id"]) if r1["name"] == "bathroom" else r2["name"] + str(r2["id"])
+                if "bathroom" in {r1["name"], r2["name"]} and key in placed_doors:
+                    continue
+                placed_doors[key] = True
+                drawn.add(((r1["name"], r1["id"]), (r2["name"], r2["id"])))
 
-    # ✅ Ensure 'static/' directory exists
-    output_dir = "static"
-    os.makedirs(output_dir, exist_ok=True)
+    for r in room_instances:
+        if r["name"] == "living room":
+            x, y, w, h = r["x"], r["y"], r["w"], r["h"]
+            edges = {
+                "bottom": [(x + i, y - 1) for i in range(w)],
+                "top": [(x + i, y + h) for i in range(w)],
+                "left": [(x - 1, y + i) for i in range(h)],
+                "right": [(x + w, y + i) for i in range(h)],
+            }
+            for side, coords in edges.items():
+                if all(c not in layout for c in coords):
+                    if side == "bottom":
+                        px = (x + w // 2) * grid_size
+                        py = y * grid_size
+                        ax.plot([px - 5, px + 5], [py, py], color="white", linewidth=4)
+                    elif side == "top":
+                        px = (x + w // 2) * grid_size
+                        py = (y + h) * grid_size
+                        ax.plot([px - 5, px + 5], [py, py], color="white", linewidth=4)
+                    elif side == "left":
+                        px = x * grid_size
+                        py = (y + h // 2) * grid_size
+                        ax.plot([px, px], [py - 5, py + 5], color="white", linewidth=4)
+                    elif side == "right":
+                        px = (x + w) * grid_size
+                        py = (y + h // 2) * grid_size
+                        ax.plot([px, px], [py - 5, py + 5], color="white", linewidth=4)
+                    break
+            break
 
-    # ✅ Save image to the correct path
-    image_path = os.path.join(output_dir, "floor_plan.png")
-    plt.savefig(image_path, format="png", dpi=100, bbox_inches="tight")
-    plt.close(fig)  # ✅ Prevent memory issues
-
-    print(f"✅ Floor plan saved at {image_path}")  # Debugging print
-
-    return "floor_plan.png"  # ✅ Return only the filename
+    os.makedirs("static", exist_ok=True)
+    plt.axis("off")
+    plt.savefig("static/floor_plan.png", dpi=100, bbox_inches="tight")
+    plt.close()
+    return "floor_plan.png"

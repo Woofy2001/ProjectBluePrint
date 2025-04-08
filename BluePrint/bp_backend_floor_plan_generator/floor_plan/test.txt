@@ -1,0 +1,155 @@
+1.9.4. API Developer (FastAPI)
+The API Developer is responsible for designing and implementing the backend API endpoints to handle Create, Read, Update, and Delete (CRUD) operations for projects. The FastAPI application is where these operations are implemented.
+
+Create Operation - FastAPI: Create a new project
+python
+Copy
+Edit
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class Project(BaseModel):
+    name: str
+    description: str
+
+@app.post("/projects/")
+async def create_project(project: Project):
+    db = SessionLocal()  # Your DB session, ensure correct setup
+    db.add(project)
+    db.commit()
+    db.refresh(project)
+    return project
+Explanation: The POST endpoint /projects/ is used to create a new project. The Project model accepts a name and description and stores it in the database.
+
+Read Operation - FastAPI: Get project by ID
+python
+Copy
+Edit
+@app.get("/projects/{project_id}")
+async def read_project(project_id: int):
+    db = SessionLocal()
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+Explanation: The GET endpoint /projects/{project_id} retrieves a specific project by its ID from the database.
+
+Update Operation - FastAPI: Update project details
+python
+Copy
+Edit
+@app.put("/projects/{project_id}")
+async def update_project(project_id: int, project: Project):
+    db = SessionLocal()
+    db_project = db.query(Project).filter(Project.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    db_project.name = project.name
+    db_project.description = project.description
+    db.commit()
+    return db_project
+Explanation: The PUT endpoint /projects/{project_id} updates the project’s name and description by ID.
+
+Delete Operation - FastAPI: Delete project by ID
+python
+Copy
+Edit
+@app.delete("/projects/{project_id}")
+async def delete_project(project_id: int):
+    db = SessionLocal()
+    db_project = db.query(Project).filter(Project.id == project_id).first()
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    db.delete(db_project)
+    db.commit()
+    return {"message": "Project deleted successfully"}
+Explanation: The DELETE endpoint /projects/{project_id} deletes a project by ID from the database.
+
+1.9.5. UI/UX Designer (Flutter)
+The UI/UX Designer is responsible for creating intuitive user interfaces in Flutter, allowing users to interact with the backend to create, read, update, and delete projects. The interface should make these actions smooth and easy for users.
+
+Create Project UI (Flutter)
+This UI allows users to input the project name and description to create a new project.
+
+dart
+Copy
+Edit
+TextFormField(
+  controller: projectNameController,
+  decoration: InputDecoration(labelText: "Project Name"),
+),
+TextFormField(
+  controller: projectDescriptionController,
+  decoration: InputDecoration(labelText: "Project Description"),
+),
+ElevatedButton(
+  onPressed: () {
+    // Call the createProject() function when the button is pressed
+    createProject(projectNameController.text, projectDescriptionController.text);
+  },
+  child: Text("Create Project"),
+)
+Explanation: These TextFormField widgets collect the project name and description. When the user presses the ElevatedButton, the createProject function is called to send the data to the backend and create a new project.
+
+Read Project UI (Flutter)
+The Read operation allows users to view the project details after selecting a project from a list.
+
+dart
+Copy
+Edit
+Future<void> fetchProjectDetails(int projectId) async {
+  var response = await http.get(
+    Uri.parse('http://localhost:8000/projects/$projectId'),
+  );
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    // Display project data
+    print("Project Name: ${data['name']}");
+    print("Project Description: ${data['description']}");
+  } else {
+    // Handle error
+  }
+}
+Explanation: This function fetches a project’s details from the backend and displays them in the UI.
+
+Update Project UI (Flutter)
+This UI allows the user to update a project’s name and description.
+
+dart
+Copy
+Edit
+TextFormField(
+  controller: projectNameController,
+  decoration: InputDecoration(labelText: "New Project Name"),
+),
+TextFormField(
+  controller: projectDescriptionController,
+  decoration: InputDecoration(labelText: "New Project Description"),
+),
+ElevatedButton(
+  onPressed: () {
+    // Call the updateProject() function to update the project
+    updateProject(projectId, projectNameController.text, projectDescriptionController.text);
+  },
+  child: Text("Update Project"),
+)
+Explanation: These form fields allow the user to enter updated project information. The updateProject function is called to send the updated details to the backend.
+
+Delete Project UI (Flutter)
+The Delete operation allows users to delete a project by selecting a project from the list and pressing the delete button.
+
+dart
+Copy
+Edit
+ElevatedButton(
+  onPressed: () {
+    // Call deleteProject() to delete the selected project
+    deleteProject(projectId);
+  },
+  child: Text("Delete Project"),
+  style: ElevatedButton.styleFrom(primary: Colors.red),
+)
+Explanation: The ElevatedButton is styled in red to indicate deletion. When pressed, it calls the deleteProject function to delete the project from the backend.
+
